@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.gameItem:nth-of-type(2n) {
+    background-color: aliceblue;
+    color: midnightblue;
+}
+
+.gameItem:nth-of-type(2n + 1) {
+    background-color: rgb(25, 25, 112, 0.6);
+    color: aliceblue;
+}
+
+body::-webkit-scrollbar {
+    width: 0;
+    appearance: none;
+}
