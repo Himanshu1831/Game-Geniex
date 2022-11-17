@@ -1,14 +1,19 @@
-import { useState } from 'react'
-
-import GameList from './components/list/GameList'
+import { Container } from '@mui/material'
+import GameTable from './components/table/GameTable'
 
 function App() {
     
     return (
-        <div className='w-screen min-h-screen flex items-center
-        justify-center relative'>
-            <GameList />
-        </div>
+        <Container sx={{
+            width: '100vw',
+            minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
+        }} maxWidth={false}>
+            <GameTable />
+        </Container>
     )
 }
 
