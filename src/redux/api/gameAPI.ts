@@ -15,9 +15,6 @@ export const gameApi = createApi({
     endpoints:(builder) => ({
         getGamesList: builder.query<GamesList, args>({ 
             query: ({page, pageCount}) => `games?page=${page}&page_size=${pageCount}&key=${API_KEY}`,
-            transformResponse: (rawResult: GamesList) => {
-                return rawResult;
-            }
         })
     })
 })
