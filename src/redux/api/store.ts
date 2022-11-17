@@ -11,3 +11,6 @@ export const store = configureStore({
             serializableCheck: false,
         }).concat(gameApi.middleware)
 })
+
+export type RootState = ReturnType<typeof store.getState>
+export type Dispatch = typeof store.dispatch
