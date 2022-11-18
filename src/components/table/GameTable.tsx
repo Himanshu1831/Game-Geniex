@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { Suspense, useState, useTransition } from 'react'
 import { 
     Box,
     Table, 
@@ -14,11 +14,15 @@ import {
     Typography,
     Skeleton,
     Button,
+    CircularProgress,
 } from '@mui/material'
 import { visuallyHidden } from '@mui/utils'
 
-import { Game } from '../../features/types'
+import { GameType } from '../../features/typeGuards'
 import { useGetGamesListQuery } from '../../redux/api/gameAPI'
+import { SuspenseImage } from '../image'
+
+type Game = ReturnType<typeof GameType>
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
     if (b[orderBy] < a[orderBy]) {
@@ -32,13 +36,10 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
 
 type Order = 'asc' | 'desc';
 
-function getComparator<Key extends keyof any>(
+function getComparator<T>(
     order: Order,
-    orderBy: Key,
-): (
-    a: { [key in Key]: number | string },
-    b: { [key in Key]: number | string },
-) => number {
+    orderBy: keyof T,
+): <K extends T>(a: K, b: K) => number {
     return order === 'desc'
         ? (a, b) => descendingComparator(a, b, orderBy)
         : (a, b) => -descendingComparator(a, b, orderBy);
@@ -46,7 +47,7 @@ function getComparator<Key extends keyof any>(
 
 // This method is created for cross-browser compatibility, if you don't
 // need to support IE11, you can use Array.prototype.sort() directly
-function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
+function stableSort<T>(array: T[], comparator: (a: T, b: T) => number) {
     const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
     stabilizedThis.sort((a, b) => {
         const order = comparator(a[0], b[0]);
@@ -133,7 +134,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                             onClick={createSortHandler(headCell.id)}
                             >
                                 <Typography variant='subtitle1'>{headCell.label}</Typography>
-                                <Box component="span" sx={visuallyHidden}>
+                                <Box component='span' sx={visuallyHidden}>
                                     {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
                                 </Box>
                             </TableSortLabel>) : (<Typography variant='subtitle1'>{headCell.label}</Typography>)}
@@ -154,9 +155,9 @@ function TableToolbar() {
         >
             <Typography
                 sx={{ flex: '1 1 100%' }}
-                variant="h6"
-                id="tableTitle"
-                component="div"
+                variant='h6'
+                id='tableTitle'
+                component='div'
             >
                 Video Games
             </Typography>
@@ -170,6 +171,7 @@ const GameTable = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10)
 	const { data, isFetching, error} = useGetGamesListQuery({page: page + 1, pageCount: rowsPerPage});
+    const [isPending, startTransition] = useTransition();
 
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
@@ -181,16 +183,20 @@ const GameTable = () => {
     };
 
     const handleChangePage = (event: unknown, newPage: number) => {
-        setPage(newPage);
+        startTransition(() => {
+            setPage(newPage);
+        })
     };
 
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
+        startTransition(() => {
+            setRowsPerPage(parseInt(event.target.value, 10));
+        })
     };
 
+    if (isPending) return <CircularProgress />
     if (error) return <div>Something went wrong!</div>
 
-    console.log(data)
     return (
         <Box sx={{ width: '100%'}}>
             <Paper sx={{ width: '100%'}}>
@@ -227,7 +233,7 @@ const GameTable = () => {
                                     </TableRow>
                                 ))
                             )}
-                            {!isFetching && data && stableSort(data.results, getComparator(order, orderBy))
+                            {!isFetching && data && stableSort<Game>(data.results, getComparator<Game>(order, orderBy))
                             .map((game) => (
                                 <TableRow
                                 key={game.id}
@@ -239,19 +245,20 @@ const GameTable = () => {
                                     <TableCell align='left'>{game.id}</TableCell>
                                     <TableCell align='center' sx={{width: 200}}>
                                         <Paper sx={{ width: '100%' }} elevation={3}>
-                                            <img src={game.background_image as string} alt={game.name as string} />
+                                            <Suspense fallback={<Paper sx={{ width: '100%', background: 'black'}}></Paper>}>
+                                                <SuspenseImage src={game.background_image as string} />
+                                            </Suspense>
                                         </Paper>
                                     </TableCell>
                                     <TableCell align='left'>{game.name}</TableCell>
                                     <TableCell align='center'>
-                                        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                                        {Array.isArray(game.genres) && game.genres.map(genre => (
-                                            <Button variant='contained' color='secondary' sx={{
-                                                mr: 1,
-                                                maxWidth: {xs: 50, lg: 100},
-                                                fontSize: {xs: 8, lg: 12},
-                                            }}>{genre.name}</Button>
-                                        ))}
+                                        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', justifyContent: 'center' }}>
+                                            {game.genres.map(genre => (
+                                                <Button variant='contained' color='secondary' key={genre.name} sx={{
+                                                    maxWidth: {xs: 50, lg: 100},
+                                                    fontSize: {xs: 8, lg: 12},
+                                                }}>{genre.name}</Button>
+                                            ))}
                                         </Box>
                                     </TableCell>
                                     <TableCell align='left'>{game.released}</TableCell>
@@ -264,7 +271,7 @@ const GameTable = () => {
             </Paper>
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25, 50, 100]}
-                component="div"
+                component='div'
                 count={-1}
                 rowsPerPage={rowsPerPage}
                 page={page}//0-based
