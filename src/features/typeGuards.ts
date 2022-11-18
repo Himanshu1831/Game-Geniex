@@ -1,3 +1,5 @@
+import { GameTypeSchema, GamesListTypeSchema } from "./typeSchemas";
+
 export type TypeGuard<T> = (val: unknown) => T;
 
 export const string: TypeGuard<string> = (val: unknown) => {
@@ -28,3 +30,7 @@ export const object = <T extends Record<string, TypeGuard<any>>>(inner: T) => {
         return out
     }
 }
+
+export const GameType = object(GameTypeSchema)
+
+export const GamesListType = object(GamesListTypeSchema)
