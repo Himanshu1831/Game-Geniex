@@ -7,20 +7,19 @@ import {
     TableContainer, 
     TableHead, 
     TableRow, 
-    TablePagination,
     Toolbar,
     Paper,
     TableSortLabel,
     Typography,
     Skeleton,
     Button,
-    CircularProgress,
 } from '@mui/material'
 import { visuallyHidden } from '@mui/utils'
 
 import { GameType } from '../../features/typeGuards'
 import { useGetGamesListQuery } from '../../redux/api/gameAPI'
-import { SuspenseImage } from '../image'
+
+import Pagination from '../Pagination'
 
 type Game = ReturnType<typeof GameType>
 
@@ -171,7 +170,6 @@ const GameTable = () => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10)
 	const { data, isFetching, error} = useGetGamesListQuery({page: page + 1, pageCount: rowsPerPage});
-    const [isPending, startTransition] = useTransition();
 
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
@@ -182,19 +180,6 @@ const GameTable = () => {
         setOrderBy(property);
     };
 
-    const handleChangePage = (event: unknown, newPage: number) => {
-        startTransition(() => {
-            setPage(newPage);
-        })
-    };
-
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        startTransition(() => {
-            setRowsPerPage(parseInt(event.target.value, 10));
-        })
-    };
-
-    if (isPending) return <CircularProgress />
     if (error) return <div>Something went wrong!</div>
 
     return (
@@ -245,9 +230,11 @@ const GameTable = () => {
                                     <TableCell align='left'>{game.id}</TableCell>
                                     <TableCell align='center' sx={{width: 200}}>
                                         <Paper sx={{ width: '100%' }} elevation={3}>
-                                            <Suspense fallback={<Paper sx={{ width: '100%', background: 'black'}}></Paper>}>
-                                                <SuspenseImage src={game.background_image as string} />
-                                            </Suspense>
+                                            <img
+                                            src={`${game.background_image as string}?w=164&h=164&fit=crop&auto=format`}
+                                            srcSet={`${game.background_image as string}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                                            alt={game.name}
+                                            loading="lazy" />
                                         </Paper>
                                     </TableCell>
                                     <TableCell align='left'>{game.name}</TableCell>
@@ -269,15 +256,8 @@ const GameTable = () => {
                     </Table>
                 </TableContainer>
             </Paper>
-            <TablePagination
-                rowsPerPageOptions={[5, 10, 20, 30, 40]}
-                component='div'
-                count={-1}
-                rowsPerPage={rowsPerPage}
-                page={page}//0-based
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
+            <Pagination page={page} rowsPerPage={rowsPerPage} setPage={setPage}
+            setRowsPerPage={setRowsPerPage} />
         </Box>
         
     )
