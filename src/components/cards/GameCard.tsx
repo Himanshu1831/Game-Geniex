@@ -79,7 +79,7 @@ const GameCard = ({ game }: Props) => {
                             <Typography component='p' fontSize={12}
                             sx={{ display: 'inline', alignSelf: 'self-end'}}>{game?.rating}</Typography>
                         </span>
-                    </Box>) : (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%'}}/>)}
+                    </Box>) : (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%', flex: 1}}/>)}
                     {game ? (<Typography fontSize={12}>Released: {game?.released}</Typography>) :
                     (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%'}}/>) }
                     <Box sx={{
