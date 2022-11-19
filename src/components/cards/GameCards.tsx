@@ -1,39 +1,39 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Box } from '@mui/material';
 
-import { GamesListType, GameType } from '../../features/typeGuards';
+import { GameType } from '../../features/typeGuards';
+import { useGetGamesListQuery } from '../../redux/api/gameAPI';
 
 import GameCard from './GameCard';
+import Pagination from '../Pagination';
 
 type Game = ReturnType<typeof GameType>
-type GamesList = ReturnType<typeof GamesListType>
 
-type PageInfo = { page: number, pageCount: number }
-const GameCards = ({ data, isFetching, pageInfo } 
-    : { data : GamesList | undefined, isFetching: boolean, pageInfo: PageInfo }) => {
-    const [gamesSoFar, updateGamesSoFar] = useState<Array<Game>>([]);
-
-    useEffect(() => {
-        if (data) updateGamesSoFar(prev => [...prev, ...data.results])
-    }, [data])
+const GameCards = () => {
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(10)
+    const { data, isFetching } = useGetGamesListQuery({ page: page + 1, pageCount: rowsPerPage})
 
     return (
-        <Box sx={{
-            width: '100%',
-            minHeight: '100vh',
-            display: 'grid',
-            gridTemplateColumns: { sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)', xl: 'repeat(5, 1fr)' },
-            gap: 2,
-            padding: 2,
-        }}>
-            {isFetching && Array.from(Array(10).keys()).map((index: number) => (
-                <GameCard key={index} />
-            ))}
-            {!isFetching && data && gamesSoFar.map((game: Game) => (
-                <GameCard key={game.id} game={game} />
-            ))}
+        <Box sx={{ width: '100%', display: 'grid'}}>
+            <Box sx={{
+                width: '100%',
+                display: 'grid',
+                gridTemplateColumns: { sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)', xl: 'repeat(5, 1fr)' },
+                gap: 2,
+                padding: 2,
+            }}>
+                {isFetching && Array.from(Array(rowsPerPage).keys()).map((index: number) => (
+                    <GameCard key={index} />
+                ))}
+                {!isFetching && data && data.results.map((game: Game) => (
+                    <GameCard key={game.id} game={game} />
+                ))}
+                
+            </Box>
+            <Pagination page={page} rowsPerPage={rowsPerPage} setPage={setPage}
+            setRowsPerPage={setRowsPerPage} />
         </Box>
-        
     )
 }
 
