@@ -270,7 +270,7 @@ const GameTable = () => {
                 </TableContainer>
             </Paper>
             <TablePagination
-                rowsPerPageOptions={[5, 10, 25, 50, 100]}
+                rowsPerPageOptions={[5, 10, 20, 30, 40]}
                 component='div'
                 count={-1}
                 rowsPerPage={rowsPerPage}
