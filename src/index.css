@@ -11,8 +11,3 @@
     background-color: rgb(25, 25, 112, 0.6);
     color: aliceblue;
 }
-
-body::-webkit-scrollbar {
-    width: 0;
-    appearance: none;
-}
