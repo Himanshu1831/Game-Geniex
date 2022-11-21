@@ -1,6 +1,10 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+*, 
+*::after,
+*::before {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
 
 .gameItem:nth-of-type(2n) {
     background-color: aliceblue;
@@ -10,4 +14,41 @@
 .gameItem:nth-of-type(2n + 1) {
     background-color: rgb(25, 25, 112, 0.6);
     color: aliceblue;
+}
+
+.pagination-arrow {
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    color: rgba(182, 190, 159);
+    opacity: 0.3;
+    transition: 0.2s ease-in-out;
+    position: fixed;
+    top: 50%;
+    z-index: 20;
+}
+
+@media only screen and (min-width: 600px) {
+    .pagination-arrow {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+.pagination-arrow:hover {
+    opacity: 1;
+}
+
+.pagination-arrow.inactive {
+    pointer-events: none;
+}
+
+.pagination-arrow:first-of-type {
+    align-self: start;
+    left: 20px;
+}
+
+.pagination-arrow:last-of-type {
+    align-self: end;
+    right: 10px;
 }
