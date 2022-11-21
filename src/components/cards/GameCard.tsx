@@ -13,6 +13,7 @@ import {
 } from '@mui/material'
 
 import { GameType } from '../../features/typeGuards'
+import LoadedImage from '../LoadedImage'
 
 type Game = ReturnType<typeof GameType>
 
@@ -39,16 +40,7 @@ const GameCard = ({ game }: Props) => {
                 justifyContent: 'start',
                 alignItems: 'start'
             }}>
-                {game ? (<CardMedia 
-                component='img'
-                image={game?.background_image}
-                alt={game?.name} 
-                sx={{
-                    width: '100%', 
-                    height: 180,
-                    objectPosition: 'top',
-                    objectFit: 'cover'
-                }}/>) : 
+                {game ? (<LoadedImage height={180} src={game.background_image} name={game.name} />) : 
                 (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%', height: 180 }}/>)
                 }
                 <CardContent sx={{
