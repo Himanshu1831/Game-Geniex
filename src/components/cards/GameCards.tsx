@@ -1,19 +1,13 @@
-import { useState } from 'react';
 import { Box } from '@mui/material';
 
 import { GameType } from '../../features/typeGuards';
-import { useGetGamesListQuery } from '../../redux/api/gameAPI';
 
 import GameCard from './GameCard';
-import Pagination from '../Pagination';
+import { GamesProps } from '../Games';
 
 type Game = ReturnType<typeof GameType>
 
-const GameCards = () => {
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10)
-    const { data, isFetching } = useGetGamesListQuery({ page: page + 1, pageCount: rowsPerPage})
-
+const GameCards = ({ data, isFetching, rowsPerPage }: GamesProps) => {
     return (
         <Box sx={{ width: '100%', display: 'grid'}}>
             <Box sx={{
@@ -29,10 +23,7 @@ const GameCards = () => {
                 {!isFetching && data && data.results.map((game: Game) => (
                     <GameCard key={game.id} game={game} />
                 ))}
-                
             </Box>
-            <Pagination page={page} rowsPerPage={rowsPerPage} setPage={setPage}
-            setRowsPerPage={setRowsPerPage} />
         </Box>
     )
 }

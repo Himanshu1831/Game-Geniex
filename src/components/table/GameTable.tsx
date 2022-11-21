@@ -1,25 +1,25 @@
-import React, { Suspense, useState, useTransition } from 'react'
-import { 
-    Box,
-    Table, 
-    TableBody, 
-    TableCell, 
-    TableContainer, 
-    TableHead, 
-    TableRow, 
-    Toolbar,
-    Paper,
-    TableSortLabel,
-    Typography,
-    Skeleton,
-    Button,
-} from '@mui/material'
-import { visuallyHidden } from '@mui/utils'
+import React, { useState } from 'react'
+
+import Box from '@mui/material/Box'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import Typography from '@mui/material/Typography'
+import Card from '@mui/material/Card'
+import CardMedia from '@mui/material/CardMedia'
+import Skeleton from '@mui/material/Skeleton'
+import Button from '@mui/material/Button'
+import Paper from '@mui/material/Paper'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import TableSortLabel from '@mui/material/TableSortLabel'
+
+import visuallyHidden from '@mui/utils/visuallyHidden'
 
 import { GameType } from '../../features/typeGuards'
-import { useGetGamesListQuery } from '../../redux/api/gameAPI'
-
-import Pagination from '../Pagination'
+import { GamesProps } from '../Games'
+import LoadedImage from '../LoadedImage'
 
 type Game = ReturnType<typeof GameType>
 
@@ -128,9 +128,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                     >
                         {headCell.allowSort ? (
                             <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
+                                active={orderBy === headCell.id}
+                                direction={orderBy === headCell.id ? order : 'asc'}
+                                onClick={createSortHandler(headCell.id)}
                             >
                                 <Typography variant='subtitle1'>{headCell.label}</Typography>
                                 <Box component='span' sx={visuallyHidden}>
@@ -143,33 +143,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
         </TableHead>
     );
 }
-
-function TableToolbar() {
-    return (
-        <Toolbar
-            sx={{
-                pl: { sm: 2 },
-                pr: { xs: 1, sm: 1 }
-            }}
-        >
-            <Typography
-                sx={{ flex: '1 1 100%' }}
-                variant='h6'
-                id='tableTitle'
-                component='div'
-            >
-                Video Games
-            </Typography>
-        </Toolbar>
-    );
-}
-
-const GameTable = () => {
+const GameTable = ({ data, isFetching, rowsPerPage }: GamesProps) => {
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] = useState<keyof Game>('name');
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10)
-	const { data, isFetching, error} = useGetGamesListQuery({page: page + 1, pageCount: rowsPerPage});
 
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
@@ -180,70 +156,69 @@ const GameTable = () => {
         setOrderBy(property);
     };
 
-    if (error) return <div>Something went wrong!</div>
-
     return (
-        <Box sx={{ width: '100%'}}>
-            <Paper sx={{ width: '100%'}}>
-                <TableToolbar />
-                <TableContainer>
-                    <Table sx={{width: '100%'}} aria-label='table of video games'>
-                        <EnhancedTableHead
+        <Box sx={{ width: '100%' }} component={Paper}>
+            <TableContainer sx={{ width: '100%', overflow: 'auto'}}>
+                <Table sx={{ width: '100%' }} aria-label='table of video games'>
+                    <EnhancedTableHead
                         order={order}
                         orderBy={orderBy}
                         onRequestSort={handleRequestSort}
-                        />
-                        <TableBody>
-                            {isFetching && (
-                                Array.from(Array(rowsPerPage).keys()).map(index => (
-                                    <TableRow key={index} sx={{width: '100%'}}>
-                                        <TableCell align='left'>
-                                            <Skeleton variant='rectangular' sx={{ height: { xs: 40, lg: 100} }} animation='wave' />
-                                        </TableCell>
-                                        <TableCell align='center' sx={{width: 200}}>
-                                            <Skeleton variant='rectangular' sx={{ height: { xs: 40, lg: 100} }} animation='wave' />
-                                        </TableCell>
-                                        <TableCell align='left'>
-                                            <Skeleton variant='rectangular' sx={{ height: { xs: 40, lg: 100} }} animation='wave' />
-                                        </TableCell>
-                                        <TableCell align='center'>
-                                            <Skeleton variant='rectangular' sx={{ height: { xs: 40, lg: 100} }} animation='wave' />
-                                        </TableCell>
-                                        <TableCell align='left'>
-                                            <Skeleton variant='rectangular' sx={{ height: { xs: 40, lg: 100} }} animation='wave' />
-                                        </TableCell>
-                                        <TableCell align='left'>
-                                            <Skeleton variant='rectangular' sx={{ height: { xs: 40, lg: 100} }} animation='wave' />
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
-                            {!isFetching && data && stableSort<Game>(data.results, getComparator<Game>(order, orderBy))
+                    />
+                    <TableBody>
+                        {isFetching && (
+                            Array.from(Array(rowsPerPage).keys()).map(index => (
+                                <TableRow key={index} sx={{ width: '100%' }}>
+                                    <TableCell align='left'>
+                                        <Skeleton variant='rectangular'
+                                            sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
+                                    </TableCell>
+                                    <TableCell align='center' sx={{ width: 200 }}>
+                                        <Skeleton variant='rectangular'
+                                            sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
+                                    </TableCell>
+                                    <TableCell align='left'>
+                                        <Skeleton variant='rectangular'
+                                            sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
+                                    </TableCell>
+                                    <TableCell align='center'>
+                                        <Skeleton variant='rectangular'
+                                            sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
+                                    </TableCell>
+                                    <TableCell align='left'>
+                                        <Skeleton variant='rectangular'
+                                            sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
+                                    </TableCell>
+                                    <TableCell align='left'>
+                                        <Skeleton variant='rectangular'
+                                            sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
+                                    </TableCell>
+                                </TableRow>
+                            ))
+                        )}
+                        {!isFetching && data && stableSort<Game>(data.results, getComparator<Game>(order, orderBy))
                             .map((game) => (
                                 <TableRow
-                                key={game.id}
-                                sx={{
-                                    width: '100%',
-                                    backgroundColor: `${game.dominant_color}`    
-                                }}
+                                    key={game.id}
+                                    sx={{
+                                        width: '100%',
+                                        backgroundColor: `${game.dominant_color}`
+                                    }}
                                 >
                                     <TableCell align='left'>{game.id}</TableCell>
-                                    <TableCell align='center' sx={{width: 200}}>
-                                        <Paper sx={{ width: '100%' }} elevation={3}>
-                                            <img
-                                            src={`${game.background_image as string}?w=164&h=164&fit=crop&auto=format`}
-                                            srcSet={`${game.background_image as string}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
-                                            alt={game.name}
-                                            loading="lazy" />
-                                        </Paper>
+                                    <TableCell align='center' sx={{ width: 150 }}>
+                                        <Card>
+                                            <LoadedImage height={100} src={game?.background_image}
+                                            name={game?.name} />
+                                        </Card>
                                     </TableCell>
                                     <TableCell align='left'>{game.name}</TableCell>
                                     <TableCell align='center'>
                                         <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', justifyContent: 'center' }}>
                                             {game.genres.map(genre => (
                                                 <Button variant='contained' color='secondary' key={genre.name} sx={{
-                                                    maxWidth: {xs: 50, lg: 100},
-                                                    fontSize: {xs: 8, lg: 12},
+                                                    maxWidth: { xs: 50, lg: 100 },
+                                                    fontSize: { xs: 8, lg: 12 },
                                                 }}>{genre.name}</Button>
                                             ))}
                                         </Box>
@@ -252,12 +227,9 @@ const GameTable = () => {
                                     <TableCell align='left'>{game.rating}</TableCell>
                                 </TableRow>
                             ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Paper>
-            <Pagination page={page} rowsPerPage={rowsPerPage} setPage={setPage}
-            setRowsPerPage={setRowsPerPage} />
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </Box>
         
     )
