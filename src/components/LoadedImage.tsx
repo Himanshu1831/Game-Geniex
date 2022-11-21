@@ -18,7 +18,7 @@ enum Status {
 const LoadedImage = (props: Props) => {
     const { height, src, name, ...htmlAttributes } = props;
     const [status, setStatus] = useState<Status>(Status.Pending);
-    const [image, setImage] = useState<HTMLImageElement>(null);
+    const [image, setImage] = useState<HTMLImageElement>();
     
     useEffect(() => {
         const image = new Image();
@@ -34,7 +34,7 @@ const LoadedImage = (props: Props) => {
             {status === Status.Success ? (
                 <CardMedia 
                 component='img'
-                image={image.src}
+                image={image?.src}
                 alt={name} 
                 {...htmlAttributes}
                 sx={{
