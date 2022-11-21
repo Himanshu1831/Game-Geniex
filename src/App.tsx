@@ -1,19 +1,18 @@
-import { Container } from '@mui/material'
-import GameCards from './components/cards/GameCards'
-import GameTable from './components/table/GameTable'
+import Box from '@mui/material/Box'
+import Games from './components/Games'
 
 function App() {
     return (
-        <Container sx={{
+        <Box sx={{
             width: '100vw',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
             position: 'relative',
-        }} maxWidth={false}>
-            <GameTable />
-        </Container>
+        }}>
+            <Games />
+        </Box>
     )
 }
 
