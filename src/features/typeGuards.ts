@@ -1,33 +1,4 @@
-export type TypeGuard<T> = (val: unknown) => T;
-
-export const string: TypeGuard<string> = (val: unknown) => {
-    if (typeof val !== 'string') throw new Error(`${val} is actually of type ${typeof val}`);
-    return val;
-}
-
-export const number: TypeGuard<number> = (val: unknown) => {
-    if (typeof val !== 'number') throw new Error(`${val} is actually of type ${typeof val}`);
-    return val;
-}
-
-export const array = <T>(inner: TypeGuard<T>) => (val: unknown): T[] => {
-    if (!Array.isArray(val)) throw new Error(`${val} is actually of type ${typeof val}`);
-    return val.map(inner);
-}
-
-export const object = <T extends Record<string, TypeGuard<any>>>(inner: T) => {
-    return (val: unknown): { [P in keyof T]: ReturnType<T[P]> } => {
-        if (val === null || typeof val !== 'object') throw new Error();
-
-        const out: { [P in keyof T]: ReturnType<T[P]> } = {} as any;
-
-        for (const k in inner) {
-            if ((val as any)[k]) out[k] = inner[k]((val as any)[k])
-        }
-
-        return out
-    }
-}
+import { number, string, object, array } from "."
 
 const TagSchema = {
     id: number,
@@ -90,4 +61,26 @@ export const GameType = object(GameTypeSchema)
 
 export const GamesListType = object(GamesListTypeSchema)
 
+export const OtherTypeSchema = {
+    id: number,
+    name: string,
+    slug: string,
+    games_count: number,
+    image_background: string,
+    image: string,
+    language: string,
+    year_start: number,
+    year_end: number,
+    domain: string,
+}
 
+export const OtherTypeListSchema = {
+    count: number,
+    next: string,
+    previous: string,
+    results: array(object(OtherTypeSchema))
+}
+
+export const OtherType = object(OtherTypeSchema);
+
+export const OtherTypeList = object(OtherTypeListSchema);
