@@ -6,7 +6,6 @@ import {
     Card,
     CardContent,
     CardActionArea,
-    CardMedia,
     Chip,
     Rating,
     Skeleton
@@ -19,11 +18,11 @@ type Game = ReturnType<typeof GameType>
 
 type Props = {
     key: React.Key,
-    game?: Game | undefined,
+    info?: Game | undefined,
     children?: ReactNode,
 }
 
-const GameCard = ({ game }: Props) => {
+const GameCard = ({ info }: Props) => {
 
     return (
         <Card sx={{ 
@@ -40,9 +39,10 @@ const GameCard = ({ game }: Props) => {
                 justifyContent: 'start',
                 alignItems: 'start'
             }}>
-                {game ? (<LoadedImage height={180} src={game.background_image} name={game.name} />) : 
+                {info ? (<LoadedImage height={180} src={info.background_image} name={info.name} />) : 
                 (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%', height: 180 }}/>)
                 }
+
                 <CardContent sx={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -51,15 +51,15 @@ const GameCard = ({ game }: Props) => {
                     flex: 1,
                     width: '100%', 
                 }}>
-                    {game ? (<Box sx={{
+                    {info ? (<Box sx={{
                         width: '100%', 
                         display: 'flex', 
+                        flexDirection: 'column',
                         alignItems: 'start',
                         flexWrap: 'wrap',
-                        gap: 2,
                         flex: 1,
                     }}>
-                        <Typography variant='h6' fontSize={16} sx={{ flex: 1}}>{game?.name}</Typography>
+                        <Typography variant='h6' fontSize={16} sx={{ flex: 1 }}>{info?.name}</Typography>
                         <span style={{
                             display: 'flex', 
                             justifyContent: 'start',
@@ -67,13 +67,16 @@ const GameCard = ({ game }: Props) => {
                             flexWrap: 'wrap',
                             gap: 1,
                         }}>
-                            <Rating name="game-rating" value={game?.rating} precision={0.5} readOnly />
+                            <Rating name="game-rating" value={info?.rating} precision={0.5} readOnly />
                             <Typography component='p' fontSize={12}
-                            sx={{ display: 'inline', alignSelf: 'self-end'}}>{game?.rating}</Typography>
+                            sx={{ display: 'inline', alignSelf: 'self-end'}}>{info?.rating}</Typography>
                         </span>
-                    </Box>) : (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%', flex: 1}}/>)}
-                    {game ? (<Typography fontSize={12}>Released: {game?.released}</Typography>) :
+                    </Box>) : 
+                    (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%', height: 50}}/>)}
+
+                    {info ? (<Typography fontSize={12}>Released: {info?.released}</Typography>) :
                     (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%'}}/>) }
+
                     <Box sx={{
                         width: '100%', 
                         display: 'flex', 
@@ -82,10 +85,15 @@ const GameCard = ({ game }: Props) => {
                         gap: 0.5,
                         padding: 0,
                     }}>
-                        {game ? game.genres?.map((genre, index: number) => (
+                        {info ? (<>
+                        {info.genres?.filter((_, index) => index < 2)
+                        .map((genre, index: number) => (
                             <Chip key={index} size='small'
-                            label={genre?.name} sx={{ backgroundColor: game.dominant_color }} />
-                        )) : (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%'}}/>)}
+                            label={genre?.name} sx={{ backgroundColor: info.dominant_color }} />
+                        ))}
+                        {info.genres?.length > 2 && (<Chip key={'ellipsis'} size='small'
+                            label='...' sx={{ backgroundColor: info.dominant_color }} />)}
+                        </>): (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%'}}/>)}
                     </Box>
                 </CardContent>
             </CardActionArea>
