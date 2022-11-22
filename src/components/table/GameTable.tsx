@@ -7,7 +7,6 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card'
-import CardMedia from '@mui/material/CardMedia'
 import Skeleton from '@mui/material/Skeleton'
 import Button from '@mui/material/Button'
 import Paper from '@mui/material/Paper'
@@ -18,7 +17,7 @@ import TableSortLabel from '@mui/material/TableSortLabel'
 import visuallyHidden from '@mui/utils/visuallyHidden'
 
 import { GameType } from '../../features/typeGuards'
-import { GamesProps } from '../Games'
+import { GamesProps } from '../../pages/Games'
 import LoadedImage from '../LoadedImage'
 
 type Game = ReturnType<typeof GameType>
