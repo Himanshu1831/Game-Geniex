@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { gameApi } from './gameAPI'
+import appReducer from '../features/appSlice'
 
 export const store = configureStore({
     reducer: {
         [gameApi.reducerPath]: gameApi.reducer,
+        app: appReducer,
     },
     middleware: (getDefaultMiddleware) => 
         getDefaultMiddleware({
