@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useCallback, ReactNode } from 'react';
 
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
@@ -8,6 +8,8 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import { GrSearch, GrMenu } from 'react-icons/gr'
+import { useAppDispatch, useAppSelector } from '../features/hooks';
+import { updateSearch } from '../redux/features/appSlice';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -51,13 +53,20 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 interface Props {
-    toggleDrawer: React.Dispatch<React.SetStateAction<boolean>>;
+    toggleDrawer: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export default function SearchAppBar({ toggleDrawer }: Props) {
-    const handleDrawerToggle = React.useCallback(() => {
+    const dispatch = useAppDispatch();
+    const search = useAppSelector(state => state.app.search);
+
+    const handleDrawerToggle = useCallback(() => {
         toggleDrawer(prev => !prev);
     }, []) 
+
+    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        dispatch(updateSearch(e.target.value));
+    }, [])
 
     return (
         <Box sx={{ width: '100%' }}>
@@ -85,6 +94,8 @@ export default function SearchAppBar({ toggleDrawer }: Props) {
                         <StyledInputBase
                             placeholder="Search…"
                             inputProps={{ 'aria-label': 'search' }}
+                            value={search}
+                            onChange={handleInputChange}
                         />
                     </Search>
                 </Toolbar>
