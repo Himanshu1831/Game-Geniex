@@ -1,16 +1,16 @@
 import { Box } from '@mui/material';
 import { TypeGuard } from '../../features';
+import { ItemsPerPage } from '../pagination';
 
 interface Props {
-    readonly data: ReturnType<TypeGuard<any>> | undefined;
-    readonly isFetching: boolean;
-    readonly rowsPerPage: number;
-    readonly element: (props: any) => JSX.Element;
+    results: Array<ReturnType<TypeGuard<any>>> | undefined;
+    isFetching: boolean;
+    element: (props: any) => JSX.Element;
 }
 
-const Cards = ({ data, isFetching, rowsPerPage, element: Element }: Props) => {
+const Cards = ({ results, isFetching, element: Element }: Props) => {
     return (
-        <Box sx={{ width: '100%', display: 'grid'}}>
+        <Box sx={{ width: '100%', display: 'grid', flex: 1 }}>
             <Box sx={{
                 width: '100%',
                 display: 'grid',
@@ -18,10 +18,10 @@ const Cards = ({ data, isFetching, rowsPerPage, element: Element }: Props) => {
                 gap: 2,
                 padding: 2,
             }}>
-                {isFetching && Array.from(Array(rowsPerPage).keys()).map((index: number) => (
+                {isFetching && Array.from(Array(ItemsPerPage).keys()).map((index: number) => (
                     <Element key={index} />
                 ))} 
-                {!isFetching && data && data.results.map((obj: any) => (
+                {!isFetching && results?.map((obj: any) => (
                     <Element key={obj.id} info={obj} />
                 ))}
             </Box>
