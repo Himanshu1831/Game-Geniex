@@ -21,14 +21,12 @@ type Props = {
 const InfoCard = ({ info }: Props) => {
     return (
         <Card component={Paper} sx={{ 
-            width: '100%', 
-            height: '100%', 
+            width: '100%',  
             padding: 0,
         }} elevation={3}
         >
             <CardActionArea sx={{ 
                 width: '100%', 
-                height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'start',
