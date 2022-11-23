@@ -10,19 +10,24 @@ import PaginationArrows from '../components/pagination/PaginationArrows';
 import Pagination from '../components/pagination/Pagination';
 
 import { useGetResourceListQuery } from '../redux/api/gameAPI'
+import { ItemsPerPage } from '../components/pagination';
+import { useAppSelector } from '../features/hooks';
 
 const Resources = () => {
     const { resource } = useParams();
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10)
     const { data, isFetching, error } = useGetResourceListQuery({ 
         page: page + 1, 
-        pageCount: rowsPerPage, 
-        endpoint: resource as string  
+        pageCount: ItemsPerPage, 
+        endpoint: resource as string,
     });
 
+    const search = useAppSelector(state => state.app.search);
+    const searchResults = data?.results?.filter(result => result?.name?.toLowerCase().includes(search));
+
     return (
-        <Box sx={{ width: '100%', 
+        <Box sx={{
+        width: '100%', 
         padding: 1, 
         display: 'flex', 
         flexDirection: 'column',
@@ -31,11 +36,13 @@ const Resources = () => {
         position: 'relative'
         }}>
             <Typography variant='h6' sx={{ textTransform: 'capitalize', ml: 2}}>{resource}</Typography>
+            <Typography variant='body2' alignSelf='center' marginBottom={1.5}>
+                {isFetching ? 'Loading...' : `${(search ? searchResults?.length : data?.count) || 0} ${resource} found`}
+            </Typography>
             <Divider />
-            <Cards data={data} isFetching={isFetching} rowsPerPage={rowsPerPage} element={InfoCard} />
-            <Pagination page={page} rowsPerPage={rowsPerPage} setPage={setPage}
-            setRowsPerPage={setRowsPerPage} />
-            <PaginationArrows page={page} setPage={setPage} rowsPerPage={rowsPerPage} totalGameCount={data?.count} />
+            <Cards results={search ? searchResults : data?.results} isFetching={isFetching} element={InfoCard} />
+            <Pagination page={page + 1} setPage={setPage} totalCount={data?.count} />
+            <PaginationArrows page={page} setPage={setPage} totalCount={data?.count} />
         </Box>
     )
 }
