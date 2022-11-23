@@ -16,7 +16,10 @@ import Pagination from '../components/pagination/Pagination'
 import { useGetGamesListQuery } from '../redux/api/gameAPI'
 import { GamesListType } from '../features/typeGuards'
 import PaginationArrows from '../components/pagination/PaginationArrows'
-
+import { ItemsPerPage } from '../components/pagination'
+import TabularPagination from '../components/pagination/TabularPagination'
+import { useAppSelector } from '../features/hooks'
+import { Divider } from '@mui/material'
 
 export interface GamesProps {
     readonly data: ReturnType<typeof GamesListType> | undefined;
@@ -35,10 +38,13 @@ const Games = () => {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10)
+    const search = useAppSelector(state => state.app.search)
+
 	const { data, isFetching, error } = useGetGamesListQuery({
-        page: page + 1, 
-        pageCount: rowsPerPage, 
-        endpoint: 'games'
+        page: page + 1,
+        pageCount: mode === Mode.Table ? rowsPerPage : ItemsPerPage, 
+        endpoint: 'games',
+        search,
     });
 
     const handleChangeMode = (event: React.MouseEvent<HTMLElement>, newMode: Mode) => {
@@ -48,7 +54,8 @@ const Games = () => {
     }
 
     return (
-        <Box sx={{ width: '100%', 
+        <Box sx={{
+        width: '100%', 
         padding: 1, 
         display: 'flex', 
         flexDirection: 'column',
@@ -67,14 +74,22 @@ const Games = () => {
                     <ToggleButton value={Mode.Cards}><BsCardText /></ToggleButton>
                 </ToggleButtonGroup>
             </Box>
+            <Typography variant='body2' alignSelf='center' marginBottom={1.5}>
+                {isFetching ? 'Loading...' : `${data?.count || 0} games found`}
+            </Typography>
             {mode === Mode.Table ? (
-                <GameTable data={data} isFetching={isFetching} rowsPerPage={rowsPerPage} />
+                <>
+                    <GameTable data={data} isFetching={isFetching} rowsPerPage={rowsPerPage} />
+                    <TabularPagination page={page} rowsPerPage={rowsPerPage} setPage={setPage}
+                    setRowsPerPage={setRowsPerPage} />
+                </>
             ) : (
-                <Cards data={data} isFetching={isFetching} rowsPerPage={rowsPerPage} element={GameCard} />
+                <>
+                    <Cards results={data?.results} isFetching={isFetching} element={GameCard} />
+                    <Pagination page={page + 1} setPage={setPage} totalCount={data?.count} />
+                </>
             )}
-            <Pagination page={page} rowsPerPage={rowsPerPage} setPage={setPage}
-            setRowsPerPage={setRowsPerPage} />
-            <PaginationArrows page={page} setPage={setPage} rowsPerPage={rowsPerPage} totalGameCount={data?.count} />
+            <PaginationArrows page={page} setPage={setPage} rowsPerPage={rowsPerPage} totalCount={data?.count} />
             {isPending && (
                 <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 100 }}
