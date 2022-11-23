@@ -19,6 +19,8 @@ import ListItemText from '@mui/material/ListItemText';
 
 import { styled, useTheme } from '@mui/material/styles';
 import { Typography } from '@mui/material';
+import { useAppDispatch } from '../features/hooks';
+import { updateSearch } from '../redux/features/appSlice';
 
 const drawerWidth = 240;
 
@@ -71,6 +73,8 @@ interface Props {
 export default function BrowseDrawer(props: Props) {
     const theme = useTheme();
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const [selected, setSelected] = useState('');
 
     const handleDrawerToggle = useCallback(() => {
         props.setOpen(prev => !prev);
@@ -78,7 +82,9 @@ export default function BrowseDrawer(props: Props) {
 
     const handleNavigation = useCallback((text: string) => {
         startTransition(() => {
-            navigate(`/${text}`)
+            setSelected(text);
+            dispatch(updateSearch(''));
+            navigate(`/${text}`);
         })
     }, []);
 
@@ -99,7 +105,9 @@ export default function BrowseDrawer(props: Props) {
             <List>
                 {topics.map((topic, index) => (
                     <ListItem key={topic.name} disablePadding>
-                        <ListItemButton onClick={() => handleNavigation(topic.name)}>
+                        <ListItemButton onClick={() => handleNavigation(topic.name)} sx={{ 
+                            background: selected === topic.name ? 'yellow': 'inherit'
+                        }}>
                             <ListItemIcon>
                                 {topic.icon}
                             </ListItemIcon>
