@@ -1,18 +1,16 @@
-import React, { useState, useEffect, useCallback, startTransition } from 'react'
+import React, { useCallback, startTransition } from 'react'
 
 import IconButton from '@mui/material/IconButton'
 
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs'
 
-import { PaginationProps } from '.'
+import { PaginationProps, ItemsPerPage } from '.'
 
 interface Props extends PaginationProps {
-    rowsPerPage: number,
-    totalGameCount: number | undefined,
+    readonly rowsPerPage?: number;
 }
 
-const PaginationArrows = ({ page, setPage, rowsPerPage, totalGameCount }: Props) => {
-
+const PaginationArrows = ({ page, setPage, totalCount, rowsPerPage }: Props) => {
     const handlePrevious = useCallback(() => {
         startTransition(() => {
             if (page === 0) return;
@@ -22,11 +20,15 @@ const PaginationArrows = ({ page, setPage, rowsPerPage, totalGameCount }: Props)
 
     const handleNext = useCallback(() => {
         startTransition(() => {
-            if (!totalGameCount) return;
-            if (page * rowsPerPage >= totalGameCount) return;
+            if (!(totalCount || rowsPerPage)) return;
+            if (rowsPerPage && page * ItemsPerPage >= rowsPerPage) return;  
+            if (totalCount && page * ItemsPerPage >= totalCount) return;
             setPage(prev => prev + 1);
         })
-    }, [page, rowsPerPage, totalGameCount])
+    }, [page, totalCount])
+
+    const inactive = (rowsPerPage && page * ItemsPerPage >= rowsPerPage) || 
+    (totalCount && page * ItemsPerPage >= totalCount);
 
     return (
         <>
@@ -41,7 +43,7 @@ const PaginationArrows = ({ page, setPage, rowsPerPage, totalGameCount }: Props)
             sx={{ position: 'fixed', top: '50%', alignSelf: 'flex-end'}} 
             disableRipple>
                 <BsArrowRightCircleFill className={`pagination-arrow 
-                ${typeof totalGameCount === 'number' && (page * rowsPerPage >= totalGameCount) ? 'inactive' : ''}`}/>
+                ${inactive ? 'inactive' : ''}`}/>
             </IconButton>
             
         </>
