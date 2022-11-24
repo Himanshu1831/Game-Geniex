@@ -67,7 +67,6 @@ const FilterMenu = ({ filterType }: Props) => {
     const filters = useAppSelector(state => state.filters);
     const dispatch = useAppDispatch();
     const [page, setPage] = useState(0);
-    const [search, setSearch] = useState('');
 
     const { data, isFetching } = useGetResourceListQuery({
         endpoint: filterType,
@@ -92,26 +91,6 @@ const FilterMenu = ({ filterType }: Props) => {
     const handleClearClick = useCallback(() => {
         dispatch(clearFilters(filterType));
     }, [filterType])
-
-    const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearch(e.target.value)
-    }, []);
-
-    const stopPropagation = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-        switch (e.key) {
-            case "ArrowDown":
-            case "ArrowUp":
-            case "Home":
-            case "End":
-                break;
-            default:
-                e.stopPropagation();
-        }
-    }, []);
-
-    const results =  search !== '' ? 
-    data?.results?.filter((result: ReturnType<typeof OtherType>) => result.name.includes(search)) :
-    data?.results;
 
     return (
         <div>
@@ -160,10 +139,6 @@ const FilterMenu = ({ filterType }: Props) => {
                                     id="composition-menu"
                                     aria-labelledby="composition-button"
                                 >
-                                    <SearchBar 
-                                        search={search} 
-                                        handleChange={handleSearchChange} 
-                                        handleKeyDown={stopPropagation}/>
                                     <Box sx={{
                                         display: 'flex',
                                         flexWrap: 'wrap',
@@ -193,8 +168,8 @@ const FilterMenu = ({ filterType }: Props) => {
                                         </Button>
                                     </Box>
                                     {isFetching ? (<Skeleton animation='wave' variant='rectangular' width='100%' height={250} />) :
-                                    results?.map(result => (
-                                        <SelectableMenuItem
+                                    data?.results?.map(result => (
+                                        <MemoMenuItem
                                             key={result?.id}
                                             name={result?.name}
                                             id={result?.id}
