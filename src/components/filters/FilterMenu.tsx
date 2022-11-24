@@ -1,190 +1,214 @@
-import React, { useState, useCallback } from 'react';
-
+import React, { useState, useCallback, useRef } from 'react';
 import { GoChevronUp, GoChevronDown } from 'react-icons/go'
 
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button';
-import Menu, { MenuProps } from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { useGetResourceListQuery } from '../../redux/api/gameAPI';
-import { alpha, Checkbox, ListItemText, styled, Typography } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox'
+import ClickAwayListener from '@mui/material/ClickAwayListener';
+import Grow from '@mui/material/Grow'
+import MenuList from '@mui/material/MenuList';
+import Popper from '@mui/material/Popper';
+import Typography from '@mui/material/Typography';
+import Paper from '@mui/material/Paper';
+import Skeleton from '@mui/material/Skeleton';
 
-import { useAppDispatch, useAppSelector } from '../../features/hooks';
-import { addFilter, addFilters, clearFilters, Filter, removeFilter } from '../../redux/features/filtersSlice';
 import Pagination from '../pagination/Pagination'
 import { ItemsPerPage } from '../pagination';
 import SearchBar from '../SearchBar';
+
+import { useAppDispatch, useAppSelector } from '../../features/hooks';
+import { addFilter, clearFilters, Filter, removeFilter } from '../../redux/features/filtersSlice';
+import { useGetResourceListQuery } from '../../redux/api/gameAPI';
+
+import { OtherType } from '../../features/typeGuards'
 
 interface Props {
     filterType: string;
 }
 
-const StyledMenu = styled((props: MenuProps) => (
-    <Menu
-        elevation={0}
-        anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-        }}
-        transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-        }}
-        {...props}
-    />
-))(({ theme }) => ({
-    '& .MuiPaper-root': {
-        borderRadius: 6,
-        marginTop: theme.spacing(1),
-        color:
-            theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
-        boxShadow:
-            `rgb(255, 255, 255) 0px 0px 0px 0px, 
-            rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, 
-            rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, 
-            rgba(0, 0, 0, 0.05) 0px 4px 6px -2px`,
-        '& .MuiMenu-list': {
-            padding: '4px 0',
-            maxHeight: '200px',
-            overflow: 'auto'
-        },
-        '& .MuiMenuItem-root': {
-            '& .MuiSvgIcon-root': {
-                fontSize: 18,
-                color: theme.palette.text.secondary,
-                marginRight: theme.spacing(1.5),
-            },
-            '&:active': {
-                backgroundColor: alpha(
-                    theme.palette.primary.main,
-                    theme.palette.action.selectedOpacity,
-                ),
-            },
-        },
-    },
-}));
-  
-const SelectableMenuItem = ({ name, id, filterType }: { name: string, id: string, filterType: string }) => {
-    const filters = useAppSelector(state => state.filters)
+const SelectableMenuItem = ({ name, id, filterType }
+    : { name: string, id: number, filterType: string }) => {
     const dispatch = useAppDispatch();
+    const filters = useAppSelector(state => state.filters)
+    const [selected, setSelected] = useState((filters[filterType] as Filter[]).map((filter: Filter) => filter.id).includes(id));
 
-    const [selected, setSelected] = useState(false);
-
-    const handleClick = useCallback(() => {
+    const handleClick = () => {
         if (!selected) dispatch(addFilter({ name, id, filterType }))
         else dispatch(removeFilter({ name, id, filterType }))
 
         setSelected(prev => !prev)
-    }, [selected])
+    }
 
     return (
         <>
             <MenuItem onClick={handleClick} sx={{
                 display: 'flex',
-            }}>
-                <Checkbox sx={{ padding: 0, marginRight: 1 }} checked={(filters[filterType] as Filter[]).map(filter => filter.name).includes(name)} />
-                <ListItemText sx={{ flex: 1 }} primary={name} />
+            }} disableTouchRipple>
+                <Checkbox
+                    sx={{ padding: 0, marginRight: 1 }}
+                    checked={selected} />
+                <Typography
+                    fontSize={12}
+                    sx={{ overflow: 'hidden', textOverflow: 'ellipsis', textTransform: 'capitalize' }}>
+                    {name}
+                </Typography>
             </MenuItem>
         </>
     )
 }
 
+const MemoMenuItem = React.memo(SelectableMenuItem)
+
 const FilterMenu = ({ filterType }: Props) => {
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const open = Boolean(anchorEl);
+    const [open, setOpen] = useState(false);
+    const anchorRef = useRef<HTMLButtonElement>(null);
 
     const filters = useAppSelector(state => state.filters);
     const dispatch = useAppDispatch();
     const [page, setPage] = useState(0);
     const [search, setSearch] = useState('');
 
-    const { data , isFetching } = useGetResourceListQuery({
+    const { data, isFetching } = useGetResourceListQuery({
         endpoint: filterType,
         page: page + 1,
-        pageCount: ItemsPerPage,
-        search,
+        pageCount: ItemsPerPage
     })
 
-    const handlePopUpClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    }
+    const handleToggle = useCallback(() => {
+        setOpen(prevOpen => !prevOpen)
+    }, [])
 
-    const handleAllClick = useCallback(() => {
-        dispatch(addFilters({ filterType, 
-            names: data?.results?.map(result => result.name),
-            ids: data?.results?.map(result => result.id.toString())
-        }));
-    }, [filterType, data])
+    const handleClose = useCallback((event: Event | React.SyntheticEvent) => {
+        if (
+            anchorRef.current &&
+            anchorRef.current.contains(event.target as HTMLElement)
+        ) {
+            return;
+        }
+        setOpen(false);
+    }, [anchorRef])
 
     const handleClearClick = useCallback(() => {
         dispatch(clearFilters(filterType));
     }, [filterType])
 
-    const handleClose = useCallback(() => {
-        setAnchorEl(null);
-    }, [])
-
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setSearch(e.target.value)
     }, []);
 
+    const stopPropagation = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+        switch (e.key) {
+            case "ArrowDown":
+            case "ArrowUp":
+            case "Home":
+            case "End":
+                break;
+            default:
+                e.stopPropagation();
+        }
+    }, []);
+
+    const results =  search !== '' ? 
+    data?.results?.filter((result: ReturnType<typeof OtherType>) => result.name.includes(search)) :
+    data?.results;
+
     return (
-        <>
-                <Button
-                    id="filter-button"
-                    aria-controls={open ? 'filter-menu' : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? 'true' : undefined}
-                    onClick={handlePopUpClick}
-                    variant='contained'
-                    endIcon={open ? <GoChevronUp /> : <GoChevronDown />}
-                    sx={{ 
-                        textTransform: 'capitalize', 
-                        width: '100%', 
-                    }}
-                >
-                    <Typography component='p' sx={{ flex: 1, textAlign: 'left' }}>{filterType}</Typography>
-                </Button>
-                <StyledMenu
-                    id="filter-menu"
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                    MenuListProps={{
-                        'aria-labelledby': 'filter-button',
-                    }}
-                >
-                    <MenuItem sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        gap: 1,
-                        width: '100%',
-                    }} disableRipple>
-                        <div style={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            flex: 1,
-                        }}>
-                            <Typography fontSize={12}>{(filters[filterType] as string[]).length} selected</Typography>
-                            <Typography fontSize={10} maxWidth={150} sx={{ overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                                {(filters[filterType] as Filter[]).map(filter => filter.name).join(', ')}
-                            </Typography>
-                        </div>
-                        <Button variant='contained' size='small' 
-                            onClick={handleClearClick}>
-                                Clear
-                        </Button>
-                    </MenuItem>
-                    <MenuItem disableRipple>
-                        <SearchBar search={search} handleChange={handleSearchChange} />
-                    </MenuItem>
-                    {data?.results?.map(result => (
-                        <SelectableMenuItem key={result?.id} name={result?.name} id={result?.id.toString()} filterType={filterType}/>
-                    ))}
-                    <MenuItem disableRipple>
-                        <Pagination page={page + 1} setPage={setPage} totalCount={data?.count} />
-                    </MenuItem>
-                </StyledMenu>
-            </>
+        <div>
+            <Button
+                ref={anchorRef}
+                id="composition-button"
+                aria-controls={open ? 'composition-menu' : undefined}
+                aria-expanded={open ? 'true' : undefined}
+                aria-haspopup="true"
+                onClick={handleToggle}
+                endIcon={open ? <GoChevronUp /> : <GoChevronDown />}
+                variant='contained'
+                sx={{
+                    textTransform: 'capitalize',
+                    width: '100%',
+                }}
+            >
+                <Typography
+                    flex={1}
+                    textAlign='left'
+                    textTransform='capitalize'>
+                    {filterType}
+                </Typography>
+            </Button>
+            <Popper
+                open={open}
+                anchorEl={anchorRef.current}
+                role={undefined}
+                placement="bottom-start"
+                transition
+                disablePortal
+                sx={{ zIndex: 20, padding: 0 }}
+            >
+                {({ TransitionProps, placement }) => (
+                    <Grow
+                        {...TransitionProps}
+                        style={{
+                            transformOrigin:
+                                placement === 'bottom-start' ? 'left top' : 'left bottom',
+                        }}
+                    >
+                        <Paper sx={{ maxWidth: 270, padding: 1, bgcolor: 'azure' }}>
+                            <ClickAwayListener onClickAway={handleClose}>
+                                <MenuList
+                                    autoFocusItem={open}
+                                    id="composition-menu"
+                                    aria-labelledby="composition-button"
+                                >
+                                    <SearchBar 
+                                        search={search} 
+                                        handleChange={handleSearchChange} 
+                                        handleKeyDown={stopPropagation}/>
+                                    <Box sx={{
+                                        display: 'flex',
+                                        flexWrap: 'wrap',
+                                        gap: 1,
+                                        width: '100%',
+                                        padding: 1,
+                                    }}>
+                                        <div style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            flex: 1,
+                                        }}>
+                                            <Typography fontSize={12}>
+                                                {(filters[filterType] as Filter[]).length} selected
+                                            </Typography>
+                                            <Typography
+                                                fontSize={10}
+                                                maxHeight={40}
+                                                paddingY={1}
+                                                sx={{ overflowY: 'hidden', textOverflow: 'ellipsis'}}>
+                                                {(filters[filterType] as Filter[]).map(filter => filter.name).join(', ')}
+                                            </Typography>
+                                        </div>
+                                        <Button variant='contained' size='small'
+                                            onClick={handleClearClick}>
+                                            Clear
+                                        </Button>
+                                    </Box>
+                                    {isFetching ? (<Skeleton animation='wave' variant='rectangular' width='100%' height={250} />) :
+                                    results?.map(result => (
+                                        <SelectableMenuItem
+                                            key={result?.id}
+                                            name={result?.name}
+                                            id={result?.id}
+                                            filterType={filterType} />
+                                    ))}
+                                    {isFetching ? (<Skeleton animation='wave' variant='rectangular' width='100%' height={50} />) :
+                                    (<Pagination page={page + 1} setPage={setPage} totalCount={data?.count} />)}
+                                </MenuList>
+                            </ClickAwayListener>
+                        </Paper>
+                    </Grow>
+                )}
+            </Popper>
+        </div>
     );
 }
 
