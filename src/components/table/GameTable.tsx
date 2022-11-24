@@ -17,8 +17,8 @@ import TableSortLabel from '@mui/material/TableSortLabel'
 import visuallyHidden from '@mui/utils/visuallyHidden'
 
 import { GameType } from '../../features/typeGuards'
-import { GamesProps } from '../../pages/Games'
 import LoadedImage from '../LoadedImage'
+import { TypeGuard } from '../../features'
 
 type Game = ReturnType<typeof GameType>
 
@@ -142,7 +142,14 @@ function EnhancedTableHead(props: EnhancedTableProps) {
         </TableHead>
     );
 }
-const GameTable = ({ data, isFetching, rowsPerPage }: GamesProps) => {
+
+interface Props {
+    results: Array<ReturnType<TypeGuard<any>>> | undefined;
+    isFetching: boolean;
+    rowsPerPage: number;
+}
+
+const GameTable = ({ results, isFetching, rowsPerPage }: Props) => {
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] = useState<keyof Game>('name');
 
@@ -195,7 +202,7 @@ const GameTable = ({ data, isFetching, rowsPerPage }: GamesProps) => {
                                 </TableRow>
                             ))
                         )}
-                        {!isFetching && data && stableSort<Game>(data.results, getComparator<Game>(order, orderBy))
+                        {!isFetching && results && stableSort<Game>(results, getComparator<Game>(order, orderBy))
                             .map((game) => (
                                 <TableRow
                                     key={game.id}
