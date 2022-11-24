@@ -10,6 +10,7 @@ import InputBase from '@mui/material/InputBase';
 import { GrSearch, GrMenu } from 'react-icons/gr'
 import { useAppDispatch, useAppSelector } from '../features/hooks';
 import { updateSearch } from '../redux/features/appSlice';
+import SearchBar from './SearchBar';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -87,17 +88,7 @@ export default function SearchAppBar({ toggleDrawer }: Props) {
                     <Typography variant='h6' sx={{ display: { xs: 'none', sm: 'none', md: 'block' }, flex: 1}}>
                         Game Store
                     </Typography>
-                    <Search>
-                        <SearchIconWrapper>
-                            <GrSearch />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
-                            value={search}
-                            onChange={handleInputChange}
-                        />
-                    </Search>
+                    <SearchBar search={search} handleChange={handleInputChange} />
                 </Toolbar>
             </AppBar>
         </Box>
