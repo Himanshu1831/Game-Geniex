@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 export interface Filter {
-    id: string;
+    id: number;
     name: string;
 }
 
@@ -28,13 +28,13 @@ const initialState: FiltersState = {
 
 type SingleFilter = { 
     name: string;
-    id: string,
+    id: number,
     filterType: string,
 }
 
 type MultipleFilters = {
     names: string[] | undefined;
-    ids: string[] | undefined;
+    ids: number[] | undefined;
     filterType: string;
 }
 
@@ -48,7 +48,7 @@ const filtersSlice = createSlice({
         },
         removeFilter: (state, action: PayloadAction<SingleFilter>) => {
             const { id, filterType } = action.payload;
-            state[filterType] = state[filterType].filter((filter: string) => filter !== id)
+            state[filterType] = state[filterType].filter((filter: Filter) => filter.id !== id)
         },
         addFilters: (state, action: PayloadAction<MultipleFilters>) => {
             const { names, ids, filterType } = action.payload;
