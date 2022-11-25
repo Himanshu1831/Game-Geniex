@@ -1,4 +1,4 @@
-import React, { useState, useCallback, startTransition} from 'react';
+import React, { useCallback, startTransition} from 'react';
 import { useNavigate } from 'react-router'
 
 import { GiGamepad, GiPlatform, GiGameConsole } from 'react-icons/gi'
@@ -24,7 +24,7 @@ import { updateSearch } from '../redux/features/appSlice';
 
 const drawerWidth = 240;
 
-const topics = [
+const filters = [
     {
         name: 'games',
         icon: <GiGamepad style={{ fontSize: 18 }} />
@@ -74,7 +74,6 @@ export default function BrowseDrawer(props: Props) {
     const theme = useTheme();
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
-    const [selected, setSelected] = useState('');
 
     const handleDrawerToggle = useCallback(() => {
         props.setOpen(prev => !prev);
@@ -82,9 +81,9 @@ export default function BrowseDrawer(props: Props) {
 
     const handleNavigation = useCallback((text: string) => {
         startTransition(() => {
-            setSelected(text);
             dispatch(updateSearch(''));
             navigate(`/${text}`);
+            handleDrawerToggle();
         })
     }, []);
 
@@ -95,23 +94,21 @@ export default function BrowseDrawer(props: Props) {
                     <GiGameConsole />
                 </IconButton>
                 <Typography sx={{ flex: 1, paddingX: 1 }}>Browse</Typography>
-                {<IconButton 
+                <IconButton 
                 onClick={handleDrawerToggle} 
                 sx={{ display: { xs: 'block', sm: 'block', md: 'none' }}}>
                     {theme.direction === 'ltr' ? <GoChevronLeft /> : <GoChevronRight />}
-                </IconButton>}
+                </IconButton>
                 </DrawerHeader>
             <Divider />
             <List>
-                {topics.map((topic, index) => (
-                    <ListItem key={topic.name} disablePadding>
-                        <ListItemButton onClick={() => handleNavigation(topic.name)} sx={{ 
-                            background: selected === topic.name ? 'yellow': 'inherit'
-                        }}>
+                {filters.map((filter, index) => (
+                    <ListItem key={filter.name} disablePadding>
+                        <ListItemButton onClick={() => handleNavigation(filter.name)}>
                             <ListItemIcon>
-                                {topic.icon}
+                                {filter.icon}
                             </ListItemIcon>
-                            <ListItemText primary={topic.name} sx={{textTransform: 'capitalize'}} />
+                            <ListItemText primary={filter.name} sx={{textTransform: 'capitalize'}} />
                         </ListItemButton>
                     </ListItem>
                 ))}
