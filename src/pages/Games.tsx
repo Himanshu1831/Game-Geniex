@@ -1,13 +1,16 @@
-import React, { useTransition, useState } from 'react'
+import React, { useTransition, useState, useCallback } from 'react'
 
 import Box from '@mui/material/Box'
+import IconButton from '@mui/material/IconButton'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
 import Backdrop from '@mui/material/Backdrop'
 import CircularProgress from '@mui/material/CircularProgress'
 import Grid from '@mui/material/Grid'
+
 import { BsTable, BsCardText } from 'react-icons/bs'
+import { GrFilter } from 'react-icons/gr'
 
 import GameTable from '../components/table/GameTable'
 import GameCard from '../components/cards/GameCard'
@@ -20,8 +23,9 @@ import { ItemsPerPage } from '../components/pagination'
 import TabularPagination from '../components/pagination/TabularPagination'
 import { useAppSelector } from '../features/hooks'
 import { TypeGuard } from '../features'
-import FilterMenu from '../components/filters/FilterMenu'
+import FilterDropdown from '../components/filters/FilterDropdown'
 import { Filter, FiltersState } from '../redux/features/filtersSlice'
+import FilterDrawer from '../components/filters/FilterDrawer'
 
 interface GamesProps {
     readonly results: Array<ReturnType<TypeGuard<any>>> | undefined;
@@ -85,6 +89,7 @@ const Games = () => {
     const [rowsPerPage, setRowsPerPage] = useState(10)
     const search = useAppSelector(state => state.app.search)
     const filters = useAppSelector(state => state.filters);
+    const [filterDrawer, setFilterDrawer] = useState(false);
 
 	const { data, isFetching, error } = useGetGamesListQuery(makeQuery(
         page + 1, 
@@ -100,6 +105,10 @@ const Games = () => {
         })
     }
 
+    const handleDrawerToggle = useCallback(() => {
+        setFilterDrawer(prevState => !prevState);
+    }, []);
+
     return (
         <Box sx={{
         width: '100%', 
@@ -109,6 +118,7 @@ const Games = () => {
         flex: 1,
         position: 'relative'
         }}>
+            <FilterDrawer open={filterDrawer} handleDrawerToggle={handleDrawerToggle} />
             <Box sx={{ display: 'flex', width: '100%', flexWrap: 'wrap', padding: 1 }}>
                 <Typography variant='h6' sx={{ flex: '1 1 0%'}}>Video Games</Typography>
                 <ToggleButtonGroup
@@ -120,11 +130,16 @@ const Games = () => {
                     <ToggleButton value={Mode.Table}><BsTable /></ToggleButton>
                     <ToggleButton value={Mode.Cards}><BsCardText /></ToggleButton>
                 </ToggleButtonGroup>
+                <IconButton 
+                    sx={{ display: {xs: 'block',  md: 'none'}, marginLeft: 1 }}
+                    onClick={handleDrawerToggle}>
+                        <GrFilter />
+                </IconButton>
             </Box>
-            <Grid container width='100%' spacing={1} padding={1}>
+            <Grid container width='100%' spacing={1} padding={1} mb={1} display={{ xs: 'none', sm: 'none', md: 'flex'}}>
                 {Object.keys(filters).map(filter => (
-                    <Grid item xs={4} md={2} key={filter}>
-                        <FilterMenu key={filter} filterType={filter} />
+                    <Grid item xs={12} md={3} lg={2} xl={12/7} key={filter}>
+                        <FilterDropdown key={filter} filterType={filter} />
                     </Grid>
                 ))}
             </Grid>
