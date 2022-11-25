@@ -18,9 +18,15 @@ const Pagination = ({ page, setPage, totalCount }: PaginationProps) => {
         showFirstButton 
         showLastButton 
         color='primary'
-        boundaryCount={2}
+        boundaryCount={0}
         siblingCount={0}
-        sx={{ paddingY: 2, alignSelf: 'center'}}/>
+        sx={{ 
+            paddingY: 2, 
+            alignSelf: 'center',
+            '& .MuiPagination-ul': {
+                padding: 0,
+            }
+        }}/>
     )
 }
 
