@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useParams } from 'react-router-dom';
+import { BsInfoCircleFill } from 'react-icons/bs';
+
 import Divider from '@mui/material/Divider';
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box';
@@ -35,7 +37,15 @@ const Resources = () => {
         gap: 1,
         position: 'relative'
         }}>
-            <Typography variant='h6' sx={{ textTransform: 'capitalize', ml: 2}}>{resource}</Typography>
+            <Box sx={{ ml: 2, display: 'flex', flexDirection: 'column', width: '100%', gap: 0.5 }}>
+                <Typography variant='h6' sx={{ textTransform: 'capitalize' }}>{resource}</Typography>
+                <Typography 
+                variant='body2'
+                sx={{ display: 'flex', width: '100%', gap: 0.5, alignItems: 'center' }}>
+                    <BsInfoCircleFill />
+                    Select cards to see games with those {resource}
+                </Typography>
+            </Box>
             <Typography variant='body2' alignSelf='center' marginBottom={1.5}>
                 {isFetching ? 'Loading...' : `${(search ? searchResults?.length : data?.count) || 0} ${resource} found`}
             </Typography>
