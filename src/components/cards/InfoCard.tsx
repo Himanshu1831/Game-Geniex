@@ -1,4 +1,4 @@
-import React, {ReactNode} from 'react'
+import React, {ReactNode, useCallback, useState} from 'react'
 
 import Card from '@mui/material/Card'
 import CardActionArea from '@mui/material/CardActionArea'
@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper'
 
 import { OtherType } from '../../features/typeGuards'
 import LoadedImage from '../LoadedImage'
+import { BsFillCheckCircleFill } from 'react-icons/bs'
 
 type Info = ReturnType<typeof OtherType>
 
@@ -19,6 +20,12 @@ type Props = {
 }
 
 const InfoCard = ({ info }: Props) => {
+    const [selected, setSelected] = useState(false);
+
+    const handleClick = useCallback((e) => {
+        setSelected(prev => !prev);
+    }, [])
+    
     return (
         <Card component={Paper} sx={{ 
             width: '100%',  
@@ -32,7 +39,8 @@ const InfoCard = ({ info }: Props) => {
                 justifyContent: 'start',
                 alignItems: 'start',
                 position: 'relative',
-            }}>
+            }}
+            onClick={handleClick}>
                 {info ? (<LoadedImage height={200} src={info.image_background} name={info.name} />) : 
                 (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%', height: 200 }}/>)}
 
@@ -56,6 +64,17 @@ const InfoCard = ({ info }: Props) => {
                     ) : 
                     (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%' }}/>)}
                 </CardContent>
+                {selected && (
+                    <BsFillCheckCircleFill style={{
+                        position: 'absolute', 
+                        top: 4, 
+                        right: 4,
+                        padding: 0,
+                        zIndex: 20,
+                        fontSize: 24,
+                        color: 'yellow'
+                     }} />
+                )}
             </CardActionArea>
         </Card>
     )
