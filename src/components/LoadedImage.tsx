@@ -9,14 +9,14 @@ enum Status {
     Failure
 } 
 
-interface Props extends HTMLAttributes<HTMLImageElement> {
+interface Props  {
     height?: number | string;
     src: string;
-    name: string;
+    name?: string;
 }
 
 const LoadedImage = (props: Props) => {
-    const { height, src, name, ...htmlAttributes } = props;
+    const { height, src, name } = props;
     const [status, setStatus] = useState<Status>(Status.Pending);
     const [image, setImage] = useState<HTMLImageElement>();
     
@@ -26,7 +26,7 @@ const LoadedImage = (props: Props) => {
         image.onerror = () => setStatus(Status.Failure)
         image.src = src;
         setImage(image)
-    }, [])
+    }, [src])
     
 
     return (
@@ -36,7 +36,6 @@ const LoadedImage = (props: Props) => {
                 component='img'
                 image={image?.src}
                 alt={name} 
-                {...htmlAttributes}
                 sx={{
                     width: '100%', 
                     height: height,
