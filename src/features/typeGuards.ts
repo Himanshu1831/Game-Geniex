@@ -105,3 +105,22 @@ export const OtherTypeList = object(OtherTypeListSchema);
 export const GameType = object(GameTypeSchema);
 
 export const GamesListType = object(GamesListTypeSchema);
+
+const GameMoviesSchema = {
+    id: number,
+    name: string,
+    preview: string,
+    data: object({})
+}
+
+const GameAchievementsSchema = {
+    id: number,
+    name: string,
+    description: string,
+    image: string,
+    percent: string
+}
+
+export const GameMoviesType = object(GameMoviesSchema);
+
+export const GameAchievementsType = object(GameAchievementsSchema);
