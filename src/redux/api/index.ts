@@ -72,4 +72,6 @@ export const queryMaker = (args: Args) => {
     return `${args.endpoint}?&key=${API_KEY}`
 }
 
+export const detailsQuery = (id: number) => `games/${id}?&key=${API_KEY}`
+
 export const transformFn = (typeGuard: TypeGuard<any>) => (rawResult: unknown) => typeGuard(rawResult);
