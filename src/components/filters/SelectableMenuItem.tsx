@@ -7,8 +7,13 @@ import Typography from '@mui/material/Typography';
 import { useAppDispatch, useAppSelector } from '../../features/hooks';
 import { addFilter, Filter, removeFilter } from '../../redux/features/filtersSlice'
 
-const SelectableMenuItem = ({ name, id, filterType }
-    : { name: string, id: number, filterType: string }) => {
+interface Props {
+    name: string; 
+    id: number; 
+    filterType: string;
+}
+
+const SelectableMenuItem = ({ name, id, filterType }: Props) => {
     const dispatch = useAppDispatch();
     const filters = useAppSelector(state => state.filters)
     const [selected, setSelected] = useState((filters[filterType] as Filter[]).map((filter: Filter) => filter.id).includes(id));

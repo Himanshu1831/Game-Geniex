@@ -13,8 +13,11 @@ import SelectableMenuItem from './SelectableMenuItem';
 import { useGetResourceListQuery } from '../../redux/api/gameAPI';
 import { ItemsPerPage } from '../pagination';
 
+interface Props {
+    filterType: string;
+}
 
-const FilterHeader = ({ filterType }: { filterType : string }) => {
+const FilterHeader = ({ filterType }: Props) => {
     const filters = useAppSelector(state => state.filters);
     const dispatch = useAppDispatch();
 

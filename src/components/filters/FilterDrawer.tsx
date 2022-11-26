@@ -33,7 +33,7 @@ interface Props {
     handleDrawerToggle: () => void;
 }
 
-export default function FilterDrawer({ open, handleDrawerToggle }: Props ) {
+const FilterDrawer = ({ open, handleDrawerToggle }: Props ) => {
     const filters = useAppSelector(state => state.filters);
 
     const [menu, setMenu] = useState('main');
@@ -64,7 +64,7 @@ export default function FilterDrawer({ open, handleDrawerToggle }: Props ) {
                 <MenuList
                 autoFocusItem={open}
                 id='composition-menu'
-                aria-aria-labelledby='composition-button'
+                aria-labelledby='composition-button'
                 sx={{ padding: 1 }}>
                     <FilterMenuContent filterType={menu} />
                 </MenuList>
@@ -92,3 +92,5 @@ export default function FilterDrawer({ open, handleDrawerToggle }: Props ) {
         </Box>
     );
 }
+
+export default FilterDrawer
