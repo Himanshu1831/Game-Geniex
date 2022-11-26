@@ -1,6 +1,10 @@
-import { Box } from '@mui/material';
+import { useState, useCallback } from 'react';
+
+import Box from '@mui/material/Box';
+
 import { TypeGuard } from '../../features';
 import { ItemsPerPage } from '../pagination';
+import GameModal from '../GameModal';
 
 interface Props {
     results: Array<ReturnType<TypeGuard<any>>> | undefined;
@@ -9,6 +13,29 @@ interface Props {
 }
 
 const Cards = ({ results, isFetching, element: Element }: Props) => {
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selected, setSelected] = useState<{
+        id: number,
+        images: Array<{ id: number, image: string }>
+    }>({
+        id: -1,
+        images: [],
+    });
+
+    const handleModalToggle = useCallback(() => {
+        setModalOpen(prev => !prev);
+    }, []);
+
+    const handleSelect = useCallback((id: number | undefined, images: Array<{ id: number, image: string }>) => {
+        if (id) {
+            setSelected({
+                id,
+                images,
+            });
+            handleModalToggle();
+        }
+    }, []);
+
     return (
         <Box sx={{ width: '100%', display: 'grid', flex: 1 }}>
             <Box sx={{
@@ -22,9 +49,10 @@ const Cards = ({ results, isFetching, element: Element }: Props) => {
                     <Element key={index} />
                 ))} 
                 {!isFetching && results?.map((obj: any) => (
-                    <Element key={obj.id} info={obj} />
+                    <Element key={obj.id} info={obj} handleSelect={handleSelect} images={obj?.short_screenshots} />
                 ))}
             </Box>
+            {selected.id > 0 && (<GameModal open={modalOpen} handleClose={handleModalToggle} id={selected.id} images={selected.images} />)}
         </Box>
     )
 }
