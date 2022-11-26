@@ -26,22 +26,21 @@ import { TypeGuard } from '../features'
 import FilterDropdown from '../components/filters/FilterDropdown'
 import { Filter, FiltersState } from '../redux/features/filtersSlice'
 import FilterDrawer from '../components/filters/FilterDrawer'
+import SearchAppBar from '../components/SearchAppBar'
 
 interface GamesProps {
     readonly results: Array<ReturnType<TypeGuard<any>>> | undefined;
     readonly isFetching: boolean;
+    readonly page: number;
+    readonly setPage: React.Dispatch<React.SetStateAction<number>>;
 }
 
 interface CardsProps extends GamesProps {
-    readonly page: number;
-    readonly setPage: React.Dispatch<React.SetStateAction<number>>;
     readonly totalCount: number | undefined;
     readonly element: (props: any) => JSX.Element;
 }
 
 interface TableProps extends GamesProps {
-    readonly page: number;
-    readonly setPage: React.Dispatch<React.SetStateAction<number>>;
     readonly rowsPerPage: number;
     readonly setRowsPerPage: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -58,7 +57,7 @@ const CardMode = ({ results, page, setPage, isFetching, totalCount, element }: C
     </>
 )
 
-const TableMode = ({results, isFetching, page, rowsPerPage, setPage, setRowsPerPage}: TableProps) => (
+const TableMode = ({results, isFetching, page, rowsPerPage, setPage, setRowsPerPage }: TableProps) => (
     <>
         <GameTable results={results} isFetching={isFetching} rowsPerPage={rowsPerPage} />
         <TabularPagination page={page} rowsPerPage={rowsPerPage} setPage={setPage}
@@ -87,7 +86,7 @@ const Games = () => {
 
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10)
-    const search = useAppSelector(state => state.app.search)
+    const [search, setSearch] = useState('');
     const filters = useAppSelector(state => state.filters);
     const [filterDrawer, setFilterDrawer] = useState(false);
 
@@ -98,7 +97,7 @@ const Games = () => {
         search, 
         filters
     ));
-
+    
     const handleChangeMode = (event: React.MouseEvent<HTMLElement>, newMode: Mode) => {
         startTransition(() => {
             setMode(newMode);
@@ -107,6 +106,10 @@ const Games = () => {
 
     const handleDrawerToggle = useCallback(() => {
         setFilterDrawer(prevState => !prevState);
+    }, []);
+
+    const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(e.target.value)
     }, []);
 
     return (
@@ -118,9 +121,10 @@ const Games = () => {
         flex: 1,
         position: 'relative'
         }}>
+            <SearchAppBar search={search} handleChange={handleSearchChange} />
             <FilterDrawer open={filterDrawer} handleDrawerToggle={handleDrawerToggle} />
             <Box sx={{ display: 'flex', width: '100%', flexWrap: 'wrap', padding: 1 }}>
-                <Typography variant='h6' sx={{ flex: '1 1 0%'}}>Video Games</Typography>
+                <Typography variant='h6' sx={{ flex: '1 1 0%'}}>RAWG Game Database</Typography>
                 <ToggleButtonGroup
                 color="primary"
                 value={mode}
@@ -162,7 +166,7 @@ const Games = () => {
                     element={GameCard} 
                     page={page} 
                     setPage={setPage} 
-                    totalCount={data?.count} />
+                    totalCount={data?.count}/>
                 </>
             )}
             <PaginationArrows page={page} setPage={setPage} rowsPerPage={rowsPerPage} totalCount={data?.count} />
