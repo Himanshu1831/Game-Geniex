@@ -3,17 +3,17 @@ import React, { HTMLAttributes, useState, useEffect } from 'react'
 import CardMedia from '@mui/material/CardMedia'
 import { Skeleton } from '@mui/material';
 
-interface Props extends HTMLAttributes<HTMLImageElement> {
-    height?: number | string;
-    src: string;
-    name: string;
-}
-
 enum Status {
     Pending,
     Success,
     Failure
 } 
+
+interface Props extends HTMLAttributes<HTMLImageElement> {
+    height?: number | string;
+    src: string;
+    name: string;
+}
 
 const LoadedImage = (props: Props) => {
     const { height, src, name, ...htmlAttributes } = props;
