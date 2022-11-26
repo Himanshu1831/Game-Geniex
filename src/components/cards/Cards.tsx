@@ -1,10 +1,22 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, ReactNode } from 'react';
 
 import Box from '@mui/material/Box';
+import Grow from '@mui/material/Grow'
 
 import { TypeGuard } from '../../features';
 import { ItemsPerPage } from '../pagination';
 import GameModal from '../GameModal';
+
+const GrowElement = ({ children }: { children: ReactNode }) => (
+    <Grow
+        in={true}
+        timeout={1000}
+        style={{ transformOrigin: '0 0 0' }}>
+        <div>
+            {children}
+        </div>
+    </Grow>
+)
 
 interface Props {
     results: Array<ReturnType<TypeGuard<any>>> | undefined;
@@ -48,8 +60,14 @@ const Cards = ({ results, isFetching, element: Element }: Props) => {
                 {isFetching && Array.from(Array(ItemsPerPage).keys()).map((index: number) => (
                     <Element key={index} />
                 ))} 
-                {!isFetching && results?.map((obj: any) => (
-                    <Element key={obj.id} info={obj} handleSelect={handleSelect} images={obj?.short_screenshots} />
+                {!isFetching && results?.map((obj: any, index: number ) => (
+                    <GrowElement
+                    key={obj.id}>
+                        <Element 
+                            info={obj} 
+                            handleSelect={handleSelect} 
+                            images={obj?.short_screenshots} />
+                    </GrowElement>
                 ))}
             </Box>
             {selected.id > 0 && (<GameModal open={modalOpen} handleClose={handleModalToggle} id={selected.id} images={selected.images} />)}
