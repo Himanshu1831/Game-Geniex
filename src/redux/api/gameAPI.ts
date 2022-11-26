@@ -1,11 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { Args, queryMaker, transformFn } from '.'
+import { Args, detailsQuery, queryMaker, transformFn } from '.'
 
-import { GamesListType, OtherTypeList } from '../../features/typeGuards'
+import { GamesListType, GameType, OtherTypeList } from '../../features/typeGuards'
 
 export const gameApi = createApi({
     reducerPath: 'gameApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://api.rawg.io/api/'}),
+    baseQuery: fetchBaseQuery({ 
+        baseUrl: 'https://api.rawg.io/api/',
+    }),
     endpoints:(builder) => ({
         getGamesList: builder.query<ReturnType<typeof GamesListType>, Args>({ 
             query: queryMaker,
@@ -14,11 +16,18 @@ export const gameApi = createApi({
         getResourceList: builder.query<ReturnType<typeof OtherTypeList>, Args>({
             query: queryMaker,
             transformResponse: transformFn(OtherTypeList),
+        }),
+        getGameDetails: builder.query<ReturnType<typeof GameType>, number>({
+            query: detailsQuery,
+            transformResponse: (rawResult: unknown) => {
+                return GameType(rawResult);
+            }
         })
     })
 })
 
 export const {
     useGetGamesListQuery,
-    useGetResourceListQuery
+    useGetResourceListQuery,
+    useGetGameDetailsQuery,
 } = gameApi
