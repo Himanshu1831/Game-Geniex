@@ -20,10 +20,11 @@ type Props = {
     key: React.Key,
     info?: Game | undefined,
     children?: ReactNode,
+    images: Array<{ id: number, image: string }>;
+    handleSelect: (id: number | undefined, images: Array<{ id: number, image: string }>) => void;
 }
 
-const GameCard = ({ info }: Props) => {
-
+const GameCard = ({ info, handleSelect, images }: Props) => {    
     return (
         <Card sx={{ 
             width: '100%', 
@@ -36,7 +37,8 @@ const GameCard = ({ info }: Props) => {
                 flexDirection: 'column',
                 justifyContent: 'start',
                 alignItems: 'start'
-            }}>
+            }}
+            onClick={() => handleSelect(info?.id, images)}>
                 {info ? (<LoadedImage height={180} src={info.background_image} name={info.name} />) : 
                 (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%', height: 180 }}/>)
                 }
