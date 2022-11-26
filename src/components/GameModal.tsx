@@ -13,12 +13,12 @@ import Link from '@mui/material/Link'
 import { useTheme } from '@mui/material/styles'
 
 import { useGetGameDetailsQuery } from '../redux/api/gameAPI';
-import LoadedImage from './LoadedImage'
+import ImageSlider from './ImageSlider'
 
 const style = {
     display: 'flex',
     flexDirection: 'column',
-    position: 'absolute' as 'absolute',
+    position: 'absolute',
     top: '50%',
     left: '50%',
     overflow: 'auto',
@@ -30,9 +30,10 @@ const style = {
     boxShadow: 24,
     p: 4,
     gap: 2,
+    fontSize: { xs: 14, lg: 18 }
 };
 
-const SkeletonModal = React.forwardRef((ref, props) => {
+const SkeletonModal = React.forwardRef((props, ref) => {
     return (
         <Box sx={style}>
             <Skeleton variant='rectangular' width='100%' height={100} animation='wave' />
@@ -51,7 +52,12 @@ const SkeletonModal = React.forwardRef((ref, props) => {
 const ChipsGroup = ({ name, data }: { name: string, data: any }) => {
     return (
         <>
-            <Typography sx={{ textTransform: 'capitalize' }}>{name}</Typography>
+            <Typography 
+            variant='h6' 
+            component='h3' 
+            sx={{ textTransform: 'capitalize' }}>
+                {name}
+            </Typography>
             <div style={{
                 display: 'flex',
                 flexWrap: 'wrap',
@@ -63,7 +69,12 @@ const ChipsGroup = ({ name, data }: { name: string, data: any }) => {
                     key={obj.id || `${name}-${index}`} 
                     label={obj.name} 
                     size='small' 
-                    sx={{ textTransform: 'capitalize' }} />
+                    sx={{ 
+                        textTransform: 'capitalize',
+                        fontSize: { xs: 12, lg: 16 },
+                        paddingX: 1,
+                        paddingY: 2,
+                    }} />
                 ))}
             </div>
         </>
@@ -91,12 +102,10 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
         >
             {(isFetching || !data) ? (<SkeletonModal />) :
                 (<Box sx={style}>
-
                     <div style={{
                         display: 'flex',
                         flexWrap: 'wrap',
                         width: '100%',
-                        position: 'sticky',
                         alignItems: 'flex-start'
                     }}>
                         <div style={{
@@ -121,7 +130,20 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
                         <IconButton onClick={handleClose}><IoMdClose /></IconButton>
                     </div>
 
-                    <LoadedImage height='100%' src={data.background_image} name={data.name} />
+                    <ImageSlider images={images} width='100%' />
+                    <Typography 
+                    variant='caption' 
+                    sx={{
+                        fontSize: { xs: 12, lg: 16 },
+                    }}>
+                        Source: &nbsp;
+                        <Link 
+                        underline='hover'
+                        component='a' 
+                        href='https://api.rawg.io/docs/'>
+                            RAWG Game Database
+                        </Link>
+                    </Typography>
 
                     <div
                         id='modal-description'
@@ -132,7 +154,7 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
                         }}
                         dangerouslySetInnerHTML={{ __html: data?.description }} />
 
-                    <Typography>Ofiicial Website</Typography>
+                    <Typography variant='h6' component='h3'>Ofiicial Website</Typography>
                     <Link 
                     component='a' 
                     underline='hover' 
@@ -143,15 +165,20 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
                         {data.website}
                     </Link>
 
-                    <Typography>Released</Typography>
-                    <Typography variant='body2'>{data.released}</Typography>
+                    <Typography variant='h6' component='h3'>Released</Typography>
+                    <Typography 
+                    variant='body2' 
+                    component='p' 
+                    sx={{
+                        fontSize: { xs: 12, lg: 16 },
+                    }}>{data.released}</Typography>
 
                     <ChipsGroup name='genres' data={data.genres} />
                     <ChipsGroup name='tags' data={data.tags} />
                     <ChipsGroup name='developers' data={data.developers} />
                     <ChipsGroup name='publishers' data={data.publishers} />
 
-                    <Typography>Sold at</Typography>
+                    <Typography variant='h6' component='h3'>Sold at</Typography>
                     <div style={{
                         display: 'flex',
                         flexWrap: 'wrap',
@@ -166,7 +193,13 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
                                 clickable
                                 key={id}
                                 rel="noreferrer"
-                                target='_blank' />
+                                target='_blank'
+                                sx={{ 
+                                    textTransform: 'capitalize',
+                                    fontSize: { xs: 12, lg: 16 },
+                                    paddingX: 1,
+                                    paddingY: 2,
+                                 }}/>
                         ))}
                     </div>
                 </Box>)}
