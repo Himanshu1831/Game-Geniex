@@ -13,6 +13,7 @@ import Paper from '@mui/material/Paper'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import TableSortLabel from '@mui/material/TableSortLabel'
+import Zoom from '@mui/material/Zoom'
 
 import visuallyHidden from '@mui/utils/visuallyHidden'
 
@@ -237,10 +238,14 @@ const GameTable = ({ results, isFetching, rowsPerPage }: Props) => {
                                         }}
                                         onClick={() => handleSelect(game?.id, game?.short_screenshots)}>
                                         <TableCell align='left'>{game.id}</TableCell>
-                                        <TableCell align='center' sx={{ width: 150 }}>
+                                        <TableCell align='center' sx={{ width: 250 }}>
                                             <Card>
-                                                <LoadedImage height={100} src={game?.background_image}
-                                                name={game?.name} />
+                                                <Zoom in={true} mountOnEnter unmountOnExit>
+                                                    <div>
+                                                        <LoadedImage height={100} src={game?.background_image}
+                                                        name={game?.name} />
+                                                    </div>
+                                                </Zoom>
                                             </Card>
                                         </TableCell>
                                         <TableCell align='left'>{game.name}</TableCell>
@@ -254,8 +259,8 @@ const GameTable = ({ results, isFetching, rowsPerPage }: Props) => {
                                                 ))}
                                             </Box>
                                         </TableCell>
-                                        <TableCell align='left'>{game.released}</TableCell>
-                                        <TableCell align='left'>{game.rating}</TableCell>
+                                        <TableCell align='left'>{game.released || 'N/A'}</TableCell>
+                                        <TableCell align='left'>{game.rating || 'N/A'}</TableCell>
                                     </TableRow>
                                 ))}
                         </TableBody>
