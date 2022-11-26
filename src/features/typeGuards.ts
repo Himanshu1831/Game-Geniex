@@ -30,10 +30,12 @@ const PlatformSchema = {
     })
 }
 
-export const GameTypeSchema = {
+const GameTypeSchema = {
     id: number,
     slug: string,
     name: string,
+    description: string,
+    description_raw: string,
     released: string,
     background_image: string,
     rating: number,
@@ -44,24 +46,39 @@ export const GameTypeSchema = {
     })),
     dominant_color: string,
     metacritic: number,
+    metacritic_url: string,
     tags: array(object(TagSchema)),
     short_screenshots: array(object(ScreenShotSchema)),
     esrb_rating: object(EsrbRatingSchema),
     platforms: array(object(PlatformSchema)),
+    website: string,
+    stores: array(object({
+        id: number,
+        store: object({
+            domain: string,
+            name: string,
+        })
+    })),
+    developers: array(object({
+        id: number,
+        name: string,
+        games_count: number,
+    })),
+    publishers: array(object({
+        id: number,
+        name: string,
+        games_count: number,
+    })),
 }
 
-export const GamesListTypeSchema = {
+const GamesListTypeSchema = {
     count: number,
     next: string,
     previous: string,
     results: array(object(GameTypeSchema))
 }
 
-export const GameType = object(GameTypeSchema)
-
-export const GamesListType = object(GamesListTypeSchema)
-
-export const OtherTypeSchema = {
+const OtherTypeSchema = {
     id: number,
     name: string,
     slug: string,
@@ -74,7 +91,7 @@ export const OtherTypeSchema = {
     domain: string,
 }
 
-export const OtherTypeListSchema = {
+const OtherTypeListSchema = {
     count: number,
     next: string,
     previous: string,
@@ -84,3 +101,7 @@ export const OtherTypeListSchema = {
 export const OtherType = object(OtherTypeSchema);
 
 export const OtherTypeList = object(OtherTypeListSchema);
+
+export const GameType = object(GameTypeSchema);
+
+export const GamesListType = object(GamesListTypeSchema);
