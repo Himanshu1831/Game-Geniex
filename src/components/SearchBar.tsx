@@ -46,10 +46,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-const SearchBar = ({ search, handleChange, handleKeyDown } 
-    : { search: string, 
-        handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>,
-        handleKeyDown?: React.KeyboardEventHandler<HTMLInputElement | HTMLTextAreaElement>}) => {
+interface Props {
+    search: string; 
+    handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+    handleKeyDown?: React.KeyboardEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+}
+
+const SearchBar = ({ search, handleChange, handleKeyDown }: Props) => {
     return (
         <Search>
             <SearchIconWrapper>
