@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
@@ -18,7 +18,8 @@ import visuallyHidden from '@mui/utils/visuallyHidden'
 
 import { GameType } from '../../features/typeGuards'
 import LoadedImage from '../LoadedImage'
-import { TypeGuard } from '../../features'
+import { number, TypeGuard } from '../../features'
+import GameModal from '../GameModal'
 
 type Game = ReturnType<typeof GameType>
 
@@ -152,7 +153,19 @@ interface Props {
 const GameTable = ({ results, isFetching, rowsPerPage }: Props) => {
     const [order, setOrder] = useState<Order>('asc');
     const [orderBy, setOrderBy] = useState<keyof Game>('name');
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selected, setSelected] = useState<{
+        id: number,
+        images: Array<{ id: number, image: string }>
+    }>({
+        id: -1,
+        images: [],
+    });
 
+    const handleModalToggle = useCallback(() => {
+        setModalOpen(prev => !prev);
+    }, []);
+    
     const handleRequestSort = (
         event: React.MouseEvent<unknown>,
         property: keyof Game,
@@ -162,82 +175,95 @@ const GameTable = ({ results, isFetching, rowsPerPage }: Props) => {
         setOrderBy(property);
     };
 
+    const handleSelect = useCallback((id: number | undefined, images: Array<{ id: number, image: string }>) => {
+        if (id) {
+            setSelected({
+                id,
+                images,
+            });
+            handleModalToggle();
+        }
+    }, []);
+
     return (
-        <Box sx={{ width: '100%' }} component={Paper}>
-            <TableContainer sx={{ width: '100%', overflow: 'auto'}}>
-                <Table sx={{ width: '100%' }} aria-label='table of video games'>
-                    <EnhancedTableHead
-                        order={order}
-                        orderBy={orderBy}
-                        onRequestSort={handleRequestSort}
-                    />
-                    <TableBody>
-                        {isFetching && (
-                            Array.from(Array(rowsPerPage).keys()).map(index => (
-                                <TableRow key={index} sx={{ width: '100%' }}>
-                                    <TableCell align='left'>
-                                        <Skeleton variant='rectangular'
-                                            sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
-                                    </TableCell>
-                                    <TableCell align='center' sx={{ width: 200 }}>
-                                        <Skeleton variant='rectangular'
-                                            sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
-                                    </TableCell>
-                                    <TableCell align='left'>
-                                        <Skeleton variant='rectangular'
-                                            sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
-                                    </TableCell>
-                                    <TableCell align='center'>
-                                        <Skeleton variant='rectangular'
-                                            sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
-                                    </TableCell>
-                                    <TableCell align='left'>
-                                        <Skeleton variant='rectangular'
-                                            sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
-                                    </TableCell>
-                                    <TableCell align='left'>
-                                        <Skeleton variant='rectangular'
-                                            sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
-                                    </TableCell>
-                                </TableRow>
-                            ))
-                        )}
-                        {!isFetching && results && stableSort<Game>(results, getComparator<Game>(order, orderBy))
-                            .map((game) => (
-                                <TableRow
-                                    key={game.id}
-                                    sx={{
-                                        width: '100%',
-                                        backgroundColor: `${game.dominant_color}`
-                                    }}
-                                >
-                                    <TableCell align='left'>{game.id}</TableCell>
-                                    <TableCell align='center' sx={{ width: 150 }}>
-                                        <Card>
-                                            <LoadedImage height={100} src={game?.background_image}
-                                            name={game?.name} />
-                                        </Card>
-                                    </TableCell>
-                                    <TableCell align='left'>{game.name}</TableCell>
-                                    <TableCell align='center'>
-                                        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', justifyContent: 'center' }}>
-                                            {game.genres.map(genre => (
-                                                <Button variant='contained' color='secondary' key={genre.name} sx={{
-                                                    maxWidth: { xs: 50, lg: 100 },
-                                                    fontSize: { xs: 8, lg: 12 },
-                                                }}>{genre.name}</Button>
-                                            ))}
-                                        </Box>
-                                    </TableCell>
-                                    <TableCell align='left'>{game.released}</TableCell>
-                                    <TableCell align='left'>{game.rating}</TableCell>
-                                </TableRow>
-                            ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </Box>
-        
+        <>
+            <Box sx={{ width: '100%' }} component={Paper}>
+                <TableContainer sx={{ width: '100%', overflow: 'auto'}}>
+                    <Table sx={{ width: '100%' }} aria-label='table of video games'>
+                        <EnhancedTableHead
+                            order={order}
+                            orderBy={orderBy}
+                            onRequestSort={handleRequestSort}
+                        />
+                        <TableBody>
+                            {isFetching && (
+                                Array.from(Array(rowsPerPage).keys()).map(index => (
+                                    <TableRow key={index} sx={{ width: '100%' }}>
+                                        <TableCell align='left'>
+                                            <Skeleton variant='rectangular'
+                                                sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
+                                        </TableCell>
+                                        <TableCell align='center' sx={{ width: 200 }}>
+                                            <Skeleton variant='rectangular'
+                                                sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
+                                        </TableCell>
+                                        <TableCell align='left'>
+                                            <Skeleton variant='rectangular'
+                                                sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
+                                        </TableCell>
+                                        <TableCell align='center'>
+                                            <Skeleton variant='rectangular'
+                                                sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
+                                        </TableCell>
+                                        <TableCell align='left'>
+                                            <Skeleton variant='rectangular'
+                                                sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
+                                        </TableCell>
+                                        <TableCell align='left'>
+                                            <Skeleton variant='rectangular'
+                                                sx={{ height: { xs: 40, lg: 100 } }} animation='wave' />
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                            {!isFetching && results && stableSort<Game>(results, getComparator<Game>(order, orderBy))
+                                .map((game) => (
+                                    <TableRow
+                                        key={game.id}
+                                        sx={{
+                                            width: '100%',
+                                            backgroundColor: `${game.dominant_color}`,
+                                            cursor: 'pointer',
+                                        }}
+                                        onClick={() => handleSelect(game?.id, game?.short_screenshots)}>
+                                        <TableCell align='left'>{game.id}</TableCell>
+                                        <TableCell align='center' sx={{ width: 150 }}>
+                                            <Card>
+                                                <LoadedImage height={100} src={game?.background_image}
+                                                name={game?.name} />
+                                            </Card>
+                                        </TableCell>
+                                        <TableCell align='left'>{game.name}</TableCell>
+                                        <TableCell align='center'>
+                                            <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', justifyContent: 'center' }}>
+                                                {game.genres.map(genre => (
+                                                    <Button variant='contained' color='secondary' key={genre.name} sx={{
+                                                        maxWidth: { xs: 50, lg: 100 },
+                                                        fontSize: { xs: 8, lg: 12 },
+                                                    }}>{genre.name}</Button>
+                                                ))}
+                                            </Box>
+                                        </TableCell>
+                                        <TableCell align='left'>{game.released}</TableCell>
+                                        <TableCell align='left'>{game.rating}</TableCell>
+                                    </TableRow>
+                                ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Box>
+            {selected.id > 0 && (<GameModal open={modalOpen} handleClose={handleModalToggle} id={selected.id} images={selected.images} />)}
+        </>
     )
 }
 
