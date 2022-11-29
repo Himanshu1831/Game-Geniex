@@ -169,7 +169,11 @@ const Games = () => {
                     totalCount={data?.count}/>
                 </>
             )}
-            <PaginationArrows page={page} setPage={setPage} rowsPerPage={rowsPerPage} totalCount={data?.count} />
+            <PaginationArrows 
+                page={page} 
+                setPage={setPage} 
+                itemsPerPage={mode === Mode.Table ? rowsPerPage : ItemsPerPage} 
+                totalCount={data?.count} />
             {isPending && (
                 <Backdrop
                 sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 100 }}
