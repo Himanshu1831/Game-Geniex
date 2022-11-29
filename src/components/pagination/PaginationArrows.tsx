@@ -4,13 +4,13 @@ import IconButton from '@mui/material/IconButton'
 
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs'
 
-import { PaginationProps, ItemsPerPage } from '.'
+import { PaginationProps } from '.'
 
 interface Props extends PaginationProps {
-    readonly rowsPerPage?: number;
+    readonly itemsPerPage: number;
 }
 
-const PaginationArrows = ({ page, setPage, totalCount, rowsPerPage }: Props) => {
+const PaginationArrows = ({ page, setPage, totalCount, itemsPerPage }: Props) => {
     const handlePrevious = useCallback(() => {
         startTransition(() => {
             if (page === 0) return;
@@ -20,15 +20,13 @@ const PaginationArrows = ({ page, setPage, totalCount, rowsPerPage }: Props) => 
 
     const handleNext = useCallback(() => {
         startTransition(() => {
-            if (!(totalCount || rowsPerPage)) return;
-            if (rowsPerPage && page * ItemsPerPage >= rowsPerPage) return;  
-            if (totalCount && page * ItemsPerPage >= totalCount) return;
-            setPage(prev => prev + 1);
+            if (totalCount && ((page + 1) * itemsPerPage < totalCount)) {
+                setPage(prev => prev + 1);
+            } 
         })
-    }, [page, totalCount])
+    }, [page, itemsPerPage, totalCount])
 
-    const inactive = (rowsPerPage && page * ItemsPerPage >= rowsPerPage) || 
-    (totalCount && page * ItemsPerPage >= totalCount);
+    const inactive = (totalCount && page * itemsPerPage >= totalCount);
 
     return (
         <>
