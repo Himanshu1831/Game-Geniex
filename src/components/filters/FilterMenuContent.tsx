@@ -1,30 +1,31 @@
-import React, { useCallback, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Skeleton from '@mui/material/Skeleton';
 
-import { useAppSelector, useAppDispatch } from '../../features/hooks';
-import { clearFilters, Filter } from '../../redux/features/filtersSlice';
-
-import Pagination from '../pagination/Pagination';
-import SelectableMenuItem from './SelectableMenuItem';
-import { useGetResourceListQuery } from '../../redux/api/gameAPI';
+import SelectableMenuItem from './SelectableMenuItem'
 import { ItemsPerPage } from '../pagination';
+import { Filter, Filters } from '../../utils/hooks/useGames';
+import useGameElements from '../../utils/hooks/useGameElements';
+import Pagination from '@mui/material/Pagination';
 
 interface Props {
     filterType: string;
+    filters: Filters,
 }
 
-const FilterHeader = ({ filterType }: Props) => {
-    const filters = useAppSelector(state => state.filters);
-    const dispatch = useAppDispatch();
+interface HeaderProps extends Props {
+    onClear: () => void;
+}
 
-    const handleClearClick = useCallback(() => {
-        dispatch(clearFilters(filterType));
-    }, [filterType])
+interface MenuProps extends Props {
+    onManageFilters: (filters: Filter[], filterType: string) => void;
+    onClear: (filterType: string) => void;
+}
 
+const FilterHeader = ({ filterType, filters, onClear }: HeaderProps) => {
     return (
         <Box sx={{
             display: 'flex',
@@ -49,31 +50,60 @@ const FilterHeader = ({ filterType }: Props) => {
                     {(filters[filterType] as Filter[]).map(filter => filter.name).join(', ')}
                 </Typography>
             </div>
-            <Button variant='contained' size='small'
-                onClick={handleClearClick}>
+            <Button 
+                variant='contained' 
+                size='small'
+                onClick={onClear}
+            >
                 Clear
             </Button>
         </Box>
     )
 }
 
-const FilterMenuContent = ({ filterType }: { filterType : string }) => {
-    const [page, setPage] = useState(0);
+const FilterMenuContent = ({ filterType, filters, onManageFilters, onClear }: MenuProps) => {
+    const { 
+        data, 
+        isFetching, 
+        page, 
+        setPage 
+    } = useGameElements(filterType);
 
-    const { data, isFetching } = useGetResourceListQuery({
-        endpoint: filterType,
-        page: page + 1,
-        pageCount: ItemsPerPage
-    })
-    
+    const [selectedItems, setSelectedItems] = useState<Filter[]>([]);
+
+    const handleClear = () => {
+        onClear(filterType);
+    }
+
+    const handleSelect = (name: string, id: number, isSelectedBefore: boolean) => {
+        setSelectedItems(items => {
+            let newItems;
+            if (isSelectedBefore) {
+                newItems = items.filter(item => item.id !== id)
+            } else {
+                newItems = [...items, { name, id }]
+            } 
+            onManageFilters(newItems, filterType);
+            return newItems;
+        })
+    }
+
     const MemoMenuItem = React.memo(SelectableMenuItem);
 
     return (
         <>
-            <FilterHeader filterType={filterType} />
+            <FilterHeader 
+                filterType={filterType} 
+                filters={filters} 
+                onClear={handleClear} />
             {isFetching ?
                 Array.from(Array(ItemsPerPage).keys()).map((index) => (
-                    <Skeleton key={index} animation='wave' variant='rectangular' width='100%' height={30}
+                    <Skeleton 
+                    key={index} 
+                    animation='wave' 
+                    variant='rectangular' 
+                    width='100%' 
+                    height={30}
                     sx={{ marginBottom: 1 }} />
                 )) :
                 data?.results?.map(result => (
@@ -81,10 +111,32 @@ const FilterMenuContent = ({ filterType }: { filterType : string }) => {
                         key={result?.id}
                         name={result?.name}
                         id={result?.id}
-                        filterType={filterType} />
+                        isSelected={selectedItems.map(item => item.id).includes(result?.id)}
+                        onSelect={handleSelect} />
                 ))}
-            {isFetching ? (<Skeleton animation='wave' variant='rectangular' width='100%' height={50} />) :
-                (<Pagination page={page + 1} setPage={setPage} totalCount={data?.count} />)}
+            {isFetching ? 
+            (<Skeleton 
+                animation='wave' 
+                variant='rectangular' 
+                width='100%' 
+                height={50} />
+            ) :
+            (<Pagination
+                count={data?.count ? Math.ceil(data?.count / ItemsPerPage) : -1}
+                page={page}
+                onChange={(e, newPage: number) => setPage(newPage)}
+                showFirstButton
+                showLastButton
+                color='primary'
+                boundaryCount={0}
+                siblingCount={0}
+                sx={{
+                    paddingY: 2,
+                    alignSelf: 'center',
+                    '& .MuiPagination-ul': {
+                        padding: 0,
+                    }
+                }} />)}
         </>
     )
 }
