@@ -54,7 +54,6 @@ const gameAPI = {
         else typeguard = OtherTypeList;
 
         return fetch(`${baseUrl}${queryMaker(args)}`)
-            .then(delay(100))
             .then(checkStatus)
             .then(parseJSON)
             .then((data) => getTypedResource(data, typeguard))
@@ -67,7 +66,6 @@ const gameAPI = {
     },
     find(id: number) {
         return fetch(`${baseUrl}${detailsQuery(id)}`)
-            .then(delay(100))
             .then(checkStatus)
             .then(parseJSON)
             .then((data) => getTypedResource(data, GameType));
