@@ -11,7 +11,7 @@ import Grid from '@mui/material/Grid'
 import { GrFilter } from 'react-icons/gr'
 
 import GameCard from '../components/cards/GameCard'
-import Cards from '../components/cards/Cards'
+import GameCards from '../components/cards/GameCards'
 import PaginationArrows from '../components/pagination/PaginationArrows'
 import FilterDropdown from '../components/filters/FilterDropdown'
 import FilterDrawer from '../components/filters/FilterDrawer'
@@ -37,6 +37,8 @@ const Games = () => {
         setSearch,
         setFilters,
     } = useGames();
+
+    console.log(data)
 
     const handleDrawerToggle = useCallback(() => {
         setFilterDrawer(prevState => !prevState);
@@ -119,10 +121,9 @@ const Games = () => {
                 {isFetching ? 'Loading...' : `${data?.count || 0} games found`}
             </Typography>
 
-            <Cards 
+            <GameCards 
                 results={data?.results}
-                isFetching={isFetching}
-                element={GameCard} />
+                isFetching={isFetching} />
 
             <Pagination
                 count={data?.count ? Math.ceil(data?.count / ItemsPerPage) : -1}
