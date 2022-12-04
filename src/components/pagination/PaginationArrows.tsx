@@ -4,41 +4,34 @@ import IconButton from '@mui/material/IconButton'
 
 import { BsArrowLeftCircleFill, BsArrowRightCircleFill } from 'react-icons/bs'
 
-import { PaginationProps } from '.'
+import { ItemsPerPage } from '.'
 
-interface Props extends PaginationProps {
-    readonly itemsPerPage: number;
+interface PaginationArrowsProps {
+    page: number, 
+    totalCount?: number | undefined,
+    onNext: () => void;
+    onPrevious: () => void;
 }
 
-const PaginationArrows = ({ page, setPage, totalCount, itemsPerPage }: Props) => {
-    const handlePrevious = useCallback(() => {
-        startTransition(() => {
-            if (page === 0) return;
-            setPage(prev => prev - 1);
-        })
-    }, [page])
-
-    const handleNext = useCallback(() => {
-        startTransition(() => {
-            if (totalCount && ((page + 1) * itemsPerPage < totalCount)) {
-                setPage(prev => prev + 1);
-            } 
-        })
-    }, [page, itemsPerPage, totalCount])
-
-    const inactive = (totalCount && page * itemsPerPage >= totalCount);
+const PaginationArrows = ({ page, onPrevious, onNext, totalCount }: PaginationArrowsProps) => {
+    const inactive = (typeof totalCount === 'number' && page * ItemsPerPage >= totalCount);
 
     return (
         <>
             <IconButton 
-            onClick={handlePrevious} 
+            onClick={onPrevious} 
             sx={{ position: 'fixed', top: '50%'}} 
             disableRipple>
                 <BsArrowLeftCircleFill className={`pagination-arrow ${page === 0 ? 'inactive' : ''}`} />
             </IconButton>
             <IconButton 
-            onClick={handleNext} 
-            sx={{ position: 'fixed', top: '50%', alignSelf: 'flex-end'}} 
+            onClick={onNext} 
+            sx={{ 
+                position: 'fixed', 
+                top: '50%', 
+                alignSelf: 'flex-end'
+            }} 
+            disabled={inactive}
             disableRipple>
                 <BsArrowRightCircleFill className={`pagination-arrow 
                 ${inactive ? 'inactive' : ''}`}/>
