@@ -12,8 +12,8 @@ import Rating from '@mui/material/Rating'
 import Link from '@mui/material/Link'
 import { useTheme } from '@mui/material/styles'
 
-import { useGetGameDetailsQuery } from '../redux/api/gameAPI';
 import ImageSlider from './ImageSlider'
+import useGameDetails from '../utils/hooks/useGameDetails'
 
 const style = {
     display: 'flex',
@@ -91,7 +91,7 @@ interface Props {
 const GameModal = ({ id, open, handleClose, images }: Props) => {
     const theme = useTheme();
 
-    const { data, isFetching } = useGetGameDetailsQuery(id);
+    const { data, isFetching } = useGameDetails(id);
 
     return (
         <Modal
@@ -123,8 +123,15 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
                                 gap: '5px',
                             }}>
                                 <Rating name="game-rating" value={data.rating} precision={0.5} readOnly />
-                                <Typography component='p' fontSize={12}
-                                    sx={{ display: 'inline', alignSelf: 'self-end' }}>{data.rating}</Typography>
+                                <Typography 
+                                component='p' 
+                                fontSize={12}
+                                sx={{ 
+                                    display: 'inline', 
+                                    alignSelf: 'self-end' 
+                                }}>
+                                    {data.rating}
+                                </Typography>
                             </span>
                         </div>
                         <IconButton onClick={handleClose}><IoMdClose /></IconButton>
