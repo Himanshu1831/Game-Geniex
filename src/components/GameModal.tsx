@@ -33,7 +33,7 @@ const style = {
     fontSize: { xs: 14, lg: 18 }
 };
 
-const SkeletonModal = React.forwardRef((props, ref) => {
+const SkeletonModal = () => {
     return (
         <Box sx={style}>
             <Skeleton variant='rectangular' width='100%' height={100} animation='wave' />
@@ -47,7 +47,7 @@ const SkeletonModal = React.forwardRef((props, ref) => {
             <Skeleton variant='rectangular' width='100%' height={150} animation='wave' />
         </Box>
     )
-})
+}
 
 const ChipsGroup = ({ name, data }: { name: string, data: any }) => {
     return (
@@ -64,7 +64,7 @@ const ChipsGroup = ({ name, data }: { name: string, data: any }) => {
                 gap: '5px',
                 width: '100%',
             }}>
-                {data.map((obj: any, index: number) => (
+                {data?.map((obj: any, index: number) => (
                     <Chip 
                     key={obj.id || `${name}-${index}`} 
                     label={obj.name} 
@@ -137,8 +137,11 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
                         <IconButton onClick={handleClose}><IoMdClose /></IconButton>
                     </div>
 
-                    <ImageSlider images={images} width='100%' />
-                    <Typography 
+                   {images.length > 0 ? 
+                   (<ImageSlider images={images} width='100%' />) 
+                   : (<Skeleton variant='rectangular' animation='wave' width='100%' height={500} />)}
+                   
+                   <Typography 
                     variant='caption' 
                     sx={{
                         fontSize: { xs: 12, lg: 16 },
@@ -192,7 +195,7 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
                         gap: '5px',
                         width: '100%'
                     }}>
-                        {data.stores.map(({ id, store }: any) => (
+                        {data.stores?.map(({ id, store }: any) => (
                             <Chip
                                 label={store.name}
                                 component="a"
