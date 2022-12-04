@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import { GoChevronRight } from 'react-icons/go'
 
@@ -14,8 +14,8 @@ import Typography from '@mui/material/Typography';
 import MenuList from '@mui/material/MenuList'
 import { styled } from '@mui/material/styles';
 
-import { useAppSelector } from '../../features/hooks';
 import FilterMenuContent from './FilterMenuContent';
+import { Filter, Filters } from '../../utils/hooks/useGames';
 
 const drawerWidth = 250;
 
@@ -29,20 +29,34 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 interface Props {
+    filters: Filters,
     open: boolean;
     handleDrawerToggle: () => void;
+    onManageFilters: (filters: Filter[], filterType: string) => void;
+    onClear: (filterType: string) => void;
 }
 
-const FilterDrawer = ({ open, handleDrawerToggle }: Props ) => {
-    const filters = useAppSelector(state => state.filters);
-
+const FilterDrawer = ({ 
+    filters, 
+    open, 
+    handleDrawerToggle, 
+    onManageFilters, 
+    onClear 
+}: Props ) => {
     const [menu, setMenu] = useState('main');
     const isFilterType = Object.keys(filters).includes(menu);
 
     const drawer = (
-        <Box component={Paper} sx={{ flex: 1, width: drawerWidth }}>
+        <Box 
+        component={Paper} 
+        sx={{ flex: 1, width: drawerWidth }}>
             <DrawerHeader>
-                <Typography sx={{ flex: 1, paddingX: 1, textTransform: 'capitalize' }}>
+                <Typography 
+                sx={{ 
+                    flex: 1, 
+                    paddingX: 1, 
+                    textTransform: 'capitalize' 
+                }}>
                     filter by{isFilterType && `: ${menu}`}
                 </Typography>
                 <IconButton 
@@ -66,7 +80,11 @@ const FilterDrawer = ({ open, handleDrawerToggle }: Props ) => {
                 id='composition-menu'
                 aria-labelledby='composition-button'
                 sx={{ padding: 1 }}>
-                    <FilterMenuContent filterType={menu} />
+                    <FilterMenuContent 
+                        filterType={menu} 
+                        filters={filters} 
+                        onManageFilters={onManageFilters}
+                        onClear={onClear} />
                 </MenuList>
             )}
         </Box>
