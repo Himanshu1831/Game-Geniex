@@ -11,13 +11,12 @@ import {
     Skeleton
 } from '@mui/material'
 
-import { GameType } from '../../features/typeGuards'
+import { GameType } from '../../utils/typeguards/typeGuards'
 import LoadedImage from '../LoadedImage'
 
 type Game = ReturnType<typeof GameType>
 
 type Props = {
-    key: React.Key,
     info?: Game | undefined,
     children?: ReactNode,
     images: Array<{ id: number, image: string }>;
@@ -31,7 +30,9 @@ const GameCard = ({ info, handleSelect, images }: Props) => {
             padding: 0,
         }}
         >
-            <CardActionArea sx={{ 
+            <CardActionArea 
+            data-testid='card'
+            sx={{ 
                 width: '100%', 
                 display: 'flex',
                 flexDirection: 'column',
@@ -59,7 +60,7 @@ const GameCard = ({ info, handleSelect, images }: Props) => {
                         flexWrap: 'wrap',
                         flex: 1,
                     }}>
-                        <Typography variant='h6' fontSize={16} sx={{ flex: 1 }}>{info?.name}</Typography>
+                        <Typography variant='h6' component='h2' fontSize={16} sx={{ flex: 1 }}>{info?.name}</Typography>
                         <span style={{
                             display: 'flex', 
                             justifyContent: 'start',
@@ -67,14 +68,29 @@ const GameCard = ({ info, handleSelect, images }: Props) => {
                             flexWrap: 'wrap',
                             gap: 1,
                         }}>
-                            <Rating name="game-rating" value={info?.rating} precision={0.5} readOnly />
-                            <Typography component='p' fontSize={12}
-                            sx={{ display: 'inline', alignSelf: 'self-end'}}>{info?.rating}</Typography>
+                            <Rating
+                                name="game-rating" 
+                                value={info?.rating} 
+                                precision={0.5} readOnly />
+                            <Typography 
+                                data-testid='rating'
+                                component='p' 
+                                fontSize={12}
+                                sx={{ 
+                                    display: 'inline', 
+                                    alignSelf: 'self-end'
+                            }}>
+                                {info?.rating}
+                            </Typography>
                         </span>
                     </Box>) : 
                     (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%', height: 50}}/>)}
 
-                    {info ? (<Typography fontSize={12}>Released: {info?.released}</Typography>) :
+                    {info ? (<Typography 
+                        data-testid='released'
+                        fontSize={12}>
+                            Released: {info?.released}
+                        </Typography>) :
                     (<Skeleton animation='wave' variant='rectangular' sx={{ width: '100%'}}/>) }
 
                     <Box sx={{
@@ -88,7 +104,7 @@ const GameCard = ({ info, handleSelect, images }: Props) => {
                         {info ? (<>
                         {info.genres?.filter((_, index) => index < 2)
                         .map((genre, index: number) => (
-                            <Chip key={index} size='small'
+                            <Chip data-testid='genre' key={index} size='small'
                             label={genre?.name} sx={{ backgroundColor: info.dominant_color }} />
                         ))}
                         {info.genres?.length > 2 && (<Chip key={'ellipsis'} size='small'
