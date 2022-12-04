@@ -3,7 +3,7 @@ import { useState, useCallback, ReactNode } from 'react';
 import Box from '@mui/material/Box';
 import Grow from '@mui/material/Grow'
 
-import { TypeGuard } from '../../features';
+import { TypeGuard } from '../../utils/typeguards';
 import { ItemsPerPage } from '../pagination';
 import GameModal from '../GameModal';
 
