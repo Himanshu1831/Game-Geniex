@@ -10,12 +10,16 @@ import Paper from '@mui/material/Paper';
 
 import FilterMenuContent from './FilterMenuContent';
 import { MenuList } from '@mui/material';
+import { Filter, Filters } from '../../utils/hooks/useGames';
 
 interface Props {
     filterType: string;
+    filters: Filters,
+    onManageFilters: (filters: Filter[], filterType: string) => void;
+    onClear: (filterType: string) => void;
 }
 
-const FilterDropdown = ({ filterType }: Props) => {
+const FilterDropdown = ({ filterType, filters, onManageFilters, onClear }: Props) => {
     const [open, setOpen] = useState(false);
     const anchorRef = useRef<HTMLButtonElement>(null);
 
@@ -73,14 +77,23 @@ const FilterDropdown = ({ filterType }: Props) => {
                                 placement === 'bottom-start' ? 'left top' : 'left bottom',
                         }}
                     >
-                        <Paper sx={{ width: 300, padding: 1, bgcolor: 'azure' }}>
+                        <Paper 
+                        sx={{ 
+                            width: 300, 
+                            padding: 1, 
+                            bgcolor: 'azure' 
+                        }}>
                             <ClickAwayListener onClickAway={handleClose}>
                                 <MenuList
                                 autoFocusItem={open}
                                 id='composition-menu'
-                                aria-aria-labelledby='composition-button'
+                                aria-labelledby='composition-button'
                                 sx={{ padding: 1 }}>
-                                    <FilterMenuContent filterType={filterType} />
+                                    <FilterMenuContent 
+                                        filters={filters}
+                                        filterType={filterType} 
+                                        onManageFilters={onManageFilters}
+                                        onClear={onClear} />
                                 </MenuList>
                             </ClickAwayListener>
                         </Paper>
