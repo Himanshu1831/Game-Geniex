@@ -52,6 +52,8 @@ const FilterDrawer = ({
         sx={{ flex: 1, width: drawerWidth }}>
             <DrawerHeader>
                 <Typography 
+                variant='h6'
+                component='h3'
                 sx={{ 
                     flex: 1, 
                     paddingX: 1, 
@@ -60,6 +62,7 @@ const FilterDrawer = ({
                     filter by{isFilterType && `: ${menu}`}
                 </Typography>
                 <IconButton 
+                aria-label='backBtn'
                 onClick={isFilterType ? () => setMenu('main') : handleDrawerToggle} 
                 >
                     <GoChevronRight />
@@ -68,7 +71,7 @@ const FilterDrawer = ({
             <Divider />
             {menu === 'main' ? (
                 Object.keys(filters).map((filter: string) => (
-                    <ListItem key={filter} disablePadding>
+                    <ListItem key={filter} aria-label='filter-type' disablePadding>
                         <ListItemButton onClick={() => setMenu(filter)}>
                             <ListItemText primary={filter} sx={{textTransform: 'capitalize'}} />
                         </ListItemButton>
@@ -77,8 +80,7 @@ const FilterDrawer = ({
             ) : (
                 <MenuList
                 autoFocusItem={open}
-                id='composition-menu'
-                aria-labelledby='composition-button'
+                aria-label='filter-menu'
                 sx={{ padding: 1 }}>
                     <FilterMenuContent 
                         filterType={menu} 
