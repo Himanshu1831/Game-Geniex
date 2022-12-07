@@ -25,9 +25,11 @@ interface MenuProps extends Props {
     onClear: (filterType: string) => void;
 }
 
-const FilterHeader = ({ filterType, filters, onClear }: HeaderProps) => {
+export const FilterHeader = ({ filterType, filters, onClear }: HeaderProps) => {
     return (
-        <Box sx={{
+        <Box 
+        aria-label='header'
+        sx={{
             display: 'flex',
             flexWrap: 'wrap',
             gap: 1,
@@ -90,52 +92,57 @@ const FilterMenuContent = ({ filterType, filters, onManageFilters, onClear }: Me
 
     return (
         <>
-            <FilterHeader 
-                aria-label='header'
-                filterType={filterType} 
-                filters={filters} 
+            <FilterHeader
+                filterType={filterType}
+                filters={filters}
                 onClear={handleClear} />
             {isFetching ?
-                Array.from(Array(ItemsPerPage).keys()).map((index) => (
-                    <Skeleton 
-                    key={index} 
-                    animation='wave' 
-                    variant='rectangular' 
-                    width='100%' 
-                    height={30}
-                    sx={{ marginBottom: 1 }} />
-                )) :
-                data?.results?.map(result => (
-                    <SelectableMenuItem
-                        key={result?.id}
-                        name={result?.name}
-                        id={result?.id}
-                        isSelected={selectedItems.map(item => item.id).includes(result?.id)}
-                        onSelect={handleSelect} />
-                ))}
-            {isFetching ? 
-            (<Skeleton 
-                animation='wave' 
-                variant='rectangular' 
-                width='100%' 
-                height={50} />
-            ) :
-            (<Pagination
-                count={data?.count ? Math.ceil(data?.count / ItemsPerPage) : -1}
-                page={page}
-                onChange={(e, newPage: number) => setPage(newPage)}
-                showFirstButton
-                showLastButton
-                color='primary'
-                boundaryCount={0}
-                siblingCount={0}
-                sx={{
-                    paddingY: 2,
-                    alignSelf: 'center',
-                    '& .MuiPagination-ul': {
-                        padding: 0,
-                    }
-                }} />)}
+                (<>
+                    {Array.from(Array(ItemsPerPage).keys()).map((index) => (
+                        <Skeleton
+                            aria-label='menu-item-skeleton'
+                            key={index}
+                            animation='wave'
+                            variant='rectangular'
+                            width='100%'
+                            height={30}
+                            sx={{ marginBottom: 1 }} />
+                    ))}
+                    <Skeleton
+                        aria-label='pagination-skeleton'
+                        animation='wave'
+                        variant='rectangular'
+                        width='100%'
+                        height={50} />
+                </>) :
+                (<>
+                    {data?.results?.map(result => (
+                        <SelectableMenuItem
+                            key={result?.id}
+                            name={result?.name}
+                            id={result?.id}
+                            isSelected={selectedItems.map(item => item.id).includes(result?.id)}
+                            onSelect={handleSelect} />
+                    ))}
+                    <Pagination
+                        aria-label='pagination'
+                        count={data?.count ? Math.ceil(data?.count / ItemsPerPage) : -1}
+                        page={page}
+                        onChange={(e, newPage: number) => setPage(newPage)}
+                        showFirstButton
+                        showLastButton
+                        color='primary'
+                        boundaryCount={0}
+                        siblingCount={0}
+                        sx={{
+                            paddingY: 2,
+                            alignSelf: 'center',
+                            '& .MuiPagination-ul': {
+                                padding: 0,
+                            }
+                        }} />
+                </>)
+            }
         </>
     )
 }
