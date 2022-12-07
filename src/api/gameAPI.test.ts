@@ -3,9 +3,10 @@ import '@testing-library/jest-dom/extend-expect'
 import { gameAPI } from './gameAPI'
 import { MOCK_GAMES } from './MockGames';
 
+global.fetch = jest.fn()
 test('should return all games', async () => {
     global.fetch = jest.fn()
-    .mockImplementation(
+    .mockImplementationOnce(
         jest.fn(() => 
             Promise.resolve({ 
                 ok: true,
@@ -13,15 +14,15 @@ test('should return all games', async () => {
                 json: () => Promise.resolve(MOCK_GAMES), 
             } as Response), 
         ) as jest.Mock 
-    ) 
+    )
 
     return gameAPI.getResources({ endpoint: 'games', page: 1 })
-        .then((data) => expect(data).toEqual(MOCK_GAMES));
+        .then((data) => expect(data).toEqual(MOCK_GAMES))
 })
 
 test('should return correct game with given id', () => {
     global.fetch = jest.fn()
-    .mockImplementation(
+    .mockImplementationOnce(
         jest.fn(() => 
             Promise.resolve({ 
                 ok: true,
@@ -37,7 +38,7 @@ test('should return correct game with given id', () => {
 
 test('should throw error when request fails', () => {
     global.fetch = jest.fn()
-    .mockImplementation(
+    .mockImplementationOnce(
         jest.fn(() => 
             Promise.resolve({ 
                 status: 404,
@@ -48,6 +49,11 @@ test('should throw error when request fails', () => {
 
     return gameAPI.find(MOCK_GAMES.results[0].id)
     .then((data) => console.log('data exists'))
-    .catch((error) => expect(error).toBeInstanceOf(Error))
+    .catch((error) => {
+        expect(error).toBeInstanceOf(Error);
+    })
+})
 
+afterEach(() => {
+    jest.clearAllMocks();
 })
