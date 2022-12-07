@@ -19,12 +19,14 @@ const PaginationArrows = ({ page, onPrevious, onNext, totalCount }: PaginationAr
     return (
         <>
             <IconButton 
+            data-testid='previousBtn'
             onClick={onPrevious} 
             sx={{ position: 'fixed', top: '50%'}} 
             disableRipple>
                 <BsArrowLeftCircleFill className={`pagination-arrow ${page === 0 ? 'inactive' : ''}`} />
             </IconButton>
             <IconButton 
+            data-testid='nextBtn'
             onClick={onNext} 
             sx={{ 
                 position: 'fixed', 
