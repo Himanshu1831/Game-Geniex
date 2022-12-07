@@ -19,6 +19,7 @@ const SelectableMenuItem = ({ name, id, isSelected, onSelect }: Props) => {
     return (
         <>
             <MenuItem 
+            aria-label='menu-item'
             onClick={handleSelect} 
             sx={{
                 display: 'flex',
