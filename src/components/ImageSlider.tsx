@@ -1,11 +1,11 @@
-import React, { useState, useRef, useCallback, startTransition, useEffect } from 'react'
+import { useState, useRef, useCallback } from 'react'
 
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa'
 
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Slide from '@mui/material/Slide';
-import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 
 import LoadedImage from './LoadedImage';
 
@@ -20,7 +20,6 @@ const ImageSlider = ({ images, width }: Props) => {
 
     const handleNextImage = useCallback(() => {
         if (image < images.length - 1) {
-            console.log(image)
             setImage(image => image + 1)
         }
     }, [image])
@@ -42,8 +41,26 @@ const ImageSlider = ({ images, width }: Props) => {
             ref={containerRef}
         >
             <Slide direction="right" in={true} mountOnEnter unmountOnExit>
-                <div>
+                <div style={{
+                    position: 'relative',
+                }}>
                     <LoadedImage height='100%' src={images[image].image} />
+                    {images.length > 1 && (
+                        <Typography 
+                        component='p' 
+                        variant='h3' 
+                        sx={{ 
+                            position: 'absolute', 
+                            fontWeight: 700,
+                            top: '0.2em', 
+                            left: '0.2em',
+                            fontStyle: 'italic',
+                            textShadow: '0px -1px #ddd',
+                            filter: 'invert(1)'
+                        }}>
+                            {image + 1}
+                        </Typography>
+                    )}
                 </div>
             </Slide>
             <div style={{
@@ -55,6 +72,7 @@ const ImageSlider = ({ images, width }: Props) => {
             }}>
                 <FaChevronLeft
                     filter='invert(1)'
+                    data-testid='previousBtn'
                     style={{
                         fontSize: '2rem',
                         alignSelf: 'center',
@@ -63,6 +81,7 @@ const ImageSlider = ({ images, width }: Props) => {
                     onClick={handlePreviousImage} />
                 <FaChevronRight
                     filter='invert(1)'
+                    data-testid='nextBtn'
                     style={{
                         fontSize: '2rem',
                         justifySelf: 'end',
