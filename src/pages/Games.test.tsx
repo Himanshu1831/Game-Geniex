@@ -28,6 +28,9 @@ test('should display all cards', () => {
     mockedUseGames
     .mockImplementation(() => ({
         data: MOCK_GAMES,
+        isLoading: false,
+        error: null,
+        isError: false,
         isFetching: false,
         page: 1,
         search: '',
@@ -39,4 +42,44 @@ test('should display all cards', () => {
 
     render(<Games />);
     expect(screen.getAllByTestId('card')).toHaveLength(MOCK_GAMES.results.length);
+})
+
+test('should display loading indicator', () => {
+    mockedUseGames
+    .mockImplementation(() => ({
+        data: MOCK_GAMES,
+        isLoading: true,
+        error: null,
+        isError: false,
+        isFetching: false,
+        page: 1,
+        search: '',
+        filters,
+        setSearch,
+        setPage,
+        setFilters
+    }))
+
+    render(<Games />);
+    expect(screen.getByText(/loading\.\.\./i)).toBeVisible();
+})
+
+test('should display error message when error occurred while fetching data', () => {
+    mockedUseGames
+    .mockImplementation(() => ({
+        data: MOCK_GAMES,
+        isLoading: false,
+        error: new Error('error fetching games'),
+        isError: true,
+        isFetching: false,
+        page: 1,
+        search: '',
+        filters,
+        setSearch,
+        setPage,
+        setFilters
+    }))
+
+    render(<Games />);
+    expect(screen.getByText(/something went wrong!/i)).toBeVisible();
 })
