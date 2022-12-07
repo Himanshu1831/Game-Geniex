@@ -35,17 +35,17 @@ const style = {
 
 const SkeletonModal = () => {
     return (
-        <Box sx={style}>
-            <Skeleton variant='rectangular' width='100%' height={100} animation='wave' />
-            <Skeleton variant='rectangular' width='100%' height={400} animation='wave' />
-            <Skeleton variant='rectangular' width='100%' height={200} animation='wave' />
-            <Skeleton variant='rectangular' width='100%' height={50} animation='wave' />
-            <Skeleton variant='rectangular' width='100%' height={100} animation='wave' />
-            <Skeleton variant='rectangular' width='100%' height={150} animation='wave' />
-            <Skeleton variant='rectangular' width='100%' height={150} animation='wave' />
-            <Skeleton variant='rectangular' width='100%' height={150} animation='wave' />
-            <Skeleton variant='rectangular' width='100%' height={150} animation='wave' />
-        </Box>
+        <>
+            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={100} animation='wave' />
+            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={400} animation='wave' />
+            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={200} animation='wave' />
+            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={50} animation='wave' />
+            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={100} animation='wave' />
+            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={150} animation='wave' />
+            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={150} animation='wave' />
+            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={150} animation='wave' />
+            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={150} animation='wave' />
+        </>
     )
 }
 
@@ -69,6 +69,7 @@ const ChipsGroup = ({ name, data }: { name: string, data: any }) => {
                     key={obj.id || `${name}-${index}`} 
                     label={obj.name} 
                     size='small' 
+                    aria-label={name}
                     sx={{ 
                         textTransform: 'capitalize',
                         fontSize: { xs: 12, lg: 16 },
@@ -100,8 +101,11 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
             aria-labelledby="modal-title"
             aria-describedby="modal-description"
         >
-            {(isFetching || !data) ? (<SkeletonModal />) :
-                (<Box sx={style}>
+            <Box sx={style}>
+                {(isFetching || !data) ? 
+                (<SkeletonModal />) : 
+                (
+                    <>
                     <div style={{
                         display: 'flex',
                         flexWrap: 'wrap',
@@ -134,7 +138,7 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
                                 </Typography>
                             </span>
                         </div>
-                        <IconButton onClick={handleClose}><IoMdClose /></IconButton>
+                        <IconButton data-testid='closeBtn' onClick={handleClose}><IoMdClose /></IconButton>
                     </div>
 
                    {images.length > 0 ? 
@@ -197,6 +201,7 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
                     }}>
                         {data.stores?.map(({ id, store }: any) => (
                             <Chip
+                                aria-label='stores'
                                 label={store.name}
                                 component="a"
                                 href={`http://${store.domain}`}
@@ -212,7 +217,9 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
                                  }}/>
                         ))}
                     </div>
-                </Box>)}
+                    </>
+                )}
+            </Box>
         </Modal>
     )
 }
