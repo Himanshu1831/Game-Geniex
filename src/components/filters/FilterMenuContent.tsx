@@ -88,11 +88,10 @@ const FilterMenuContent = ({ filterType, filters, onManageFilters, onClear }: Me
         })
     }
 
-    const MemoMenuItem = React.memo(SelectableMenuItem);
-
     return (
         <>
             <FilterHeader 
+                aria-label='header'
                 filterType={filterType} 
                 filters={filters} 
                 onClear={handleClear} />
@@ -107,7 +106,7 @@ const FilterMenuContent = ({ filterType, filters, onManageFilters, onClear }: Me
                     sx={{ marginBottom: 1 }} />
                 )) :
                 data?.results?.map(result => (
-                    <MemoMenuItem
+                    <SelectableMenuItem
                         key={result?.id}
                         name={result?.name}
                         id={result?.id}
