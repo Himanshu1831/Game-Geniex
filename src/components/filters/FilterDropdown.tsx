@@ -85,6 +85,7 @@ const FilterDropdown = ({ filterType, filters, onManageFilters, onClear }: Props
                         }}>
                             <ClickAwayListener onClickAway={handleClose}>
                                 <MenuList
+                                aria-label='filter-menu'
                                 autoFocusItem={open}
                                 id='composition-menu'
                                 aria-labelledby='composition-button'
