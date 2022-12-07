@@ -92,4 +92,57 @@ describe('Filter Menu Content', () => {
     })
 })
 
-d
+describe('Filter Header', () => {
+    const setUp = () => {
+        const filters = {
+            genres: [
+                {id: 1, name: 'action'},
+                {id: 2, name: 'adventure'}, 
+                {id: 3, name: 'shooter'}
+            ],
+            tags: [],
+            developers: [],
+            publishers: [],
+            stores: [],
+            platforms: [],
+            creators: []
+        }
+
+        const handleClear = jest.fn()
+        const utils = render(
+        <FilterHeader 
+        filterType='genres' 
+        filters={filters} 
+        onClear={handleClear} />
+        )
+
+        return {
+            ...utils,
+            handleClear,
+            filters,
+        }
+    }
+
+    it('should display 3 genres selected', () => {
+        const { getByText } = setUp();
+        expect(getByText(/3 selected/i)).toBeVisible();
+    })
+
+    it('should display the names of the selected genres', () => {
+        const { getByText, filters } = setUp();
+        expect(getByText(filters
+            .genres
+            .map(genre => genre.name)
+            .join(', '))
+        ).toBeVisible();
+    })
+
+    it('handler is called when clear button is clicked', async () => {
+        const { handleClear, getByRole } = setUp();
+        const clearBtn = getByRole('button', { name: /clear/i });
+
+        await userEvent.click(clearBtn);
+        expect(handleClear).toBeCalledTimes(1)
+    })
+
+})
