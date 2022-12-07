@@ -60,7 +60,7 @@ const gameAPI = {
             .catch((error: TypeError) => {
                 console.log('log client error ' + error);
                 throw new Error(
-                    'There was an error retrieving the projects. Please try again.'
+                    'There was an error retrieving the games. Please try again.'
                 );
             });
     },
