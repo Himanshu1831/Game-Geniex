@@ -38,8 +38,6 @@ const Games = () => {
         setFilters,
     } = useGames();
 
-    console.log(data)
-
     const handleDrawerToggle = useCallback(() => {
         setFilterDrawer(prevState => !prevState);
     }, []);
