@@ -49,10 +49,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 interface Props {
     search: string; 
     handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
-    handleKeyDown?: React.KeyboardEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 }
 
-const SearchBar = ({ search, handleChange, handleKeyDown }: Props) => {
+const SearchBar = ({ search, handleChange }: Props) => {
     return (
         <Search>
             <SearchIconWrapper>
@@ -63,7 +62,6 @@ const SearchBar = ({ search, handleChange, handleKeyDown }: Props) => {
                 inputProps={{ 'aria-label': 'search' }}
                 value={search}
                 onChange={handleChange}
-                onKeyDown={handleKeyDown}
             />
         </Search>
     )
