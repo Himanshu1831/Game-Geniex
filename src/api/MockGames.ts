@@ -112,5 +112,61 @@ export const MOCK_GAME = {
         { id: 31, slug: 'singleplayer', name: 'Singleplayer' },
         { id: 7, slug: 'multiplayer', name: 'Multiplayer' },
         { id: 13, slug: 'atmospheric', name: 'atmospheric' }
-    ]
+    ],
+    website: 'website.com',
+    stores: [
+        { 
+            id: 1, 
+            store: {
+                domain: 'store-1.com', name: 'store-1'
+            }
+        },
+        { 
+            id: 2, 
+            store: {
+                domain: 'store-2.com', name: 'store-2'
+            }
+        },
+        { 
+            id: 3, 
+            store: {
+                domain: 'store-3.com', name: 'store-3'
+            }
+        },
+    ],
+    developers: [
+        { id: 1, slug: 'developer-1', name: 'developer-1' },
+        { id: 2, slug: 'developer-2', name: 'developer-2' },
+        { id: 3, slug: 'developer-3', name: 'developer-3' }
+    ],
+    publishers: [
+        { id: 1, slug: 'publisher-1', name: 'publisher-1' },
+        { id: 2, slug: 'publisher-2', name: 'publisher-2' },
+        { id: 3, slug: 'publisher-3', name: 'publisher-3' }
+    ],
+    platforms: [
+        {
+            released_at: '2022-10-10',
+            platform: {
+                image_background: 'https://media.rawg.io/media/games/456/456dea5e1c7e3cd07060c14e96612001.jpg',
+                name: 'platform-1'
+            }
+        },
+        {
+            released_at: '2022-10-12',
+            platform: {
+                image_background: 'https://media.rawg.io/media/games/456/456dea5e1c7e3cd07060c14e96612001.jpg',
+                name: 'platform-2'
+            }
+        },
+        {
+            released_at: '2022-10-15',
+            platform: {
+                image_background: 'https://media.rawg.io/media/games/456/456dea5e1c7e3cd07060c14e96612001.jpg',
+                name: 'platform-3'
+            }
+        }
+    ],
+    description_raw: '<p>This is the game description.</p>',
+    description: 'This is the game description.',
 }
