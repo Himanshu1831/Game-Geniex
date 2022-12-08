@@ -74,6 +74,18 @@ test('should not display skeletons when no data is returned', () => {
     expect(screen.queryAllByLabelText('skeleton')).toHaveLength(0);
 })
 
+test('should display loading indicator when data is being fetched', () => {
+    mockedUseGameDetails.mockImplementation(
+        () => ({
+            data: MOCK_GAME,
+            isFetching: true,
+        })
+    )
+
+    setUp();
+    expect(screen.getByText(/loading\.\.\./i)).toBeVisible();
+})
+
 test('handler is called when closeBtn is clicked', async () => {
     mockedUseGameDetails
     .mockImplementation(() => ({
