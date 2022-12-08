@@ -61,7 +61,7 @@ test('should not display skeletons while data is being fetched', () => {
     expect(screen.queryAllByLabelText('skeleton')).toHaveLength(0);
 })
 
-test('should display skeletons when no data is returned', () => {
+test('should not display skeletons when no data is returned', () => {
     mockedUseGameDetails.mockImplementation(
         () => ({
             data: null,
@@ -71,7 +71,7 @@ test('should display skeletons when no data is returned', () => {
 
     setUp();
     
-    expect(screen.getAllByLabelText('skeleton')).toHaveLength(9);
+    expect(screen.queryAllByLabelText('skeleton')).toHaveLength(0);
 })
 
 test('handler is called when closeBtn is clicked', async () => {
