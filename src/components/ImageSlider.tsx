@@ -32,8 +32,8 @@ const ImageSlider = ({ images, width }: Props) => {
     
     return (
         <Box
+            width={{ sm: '100%', md: width }}
             sx={{
-                width: width,
                 position: 'relative',
             }}
             component={Paper}
@@ -44,7 +44,7 @@ const ImageSlider = ({ images, width }: Props) => {
                 <div style={{
                     position: 'relative',
                 }}>
-                    <LoadedImage height='100%' src={images[image].image} />
+                    <LoadedImage src={images[image].image} />
                     {images.length > 1 && (
                         <Typography 
                         component='p' 
@@ -65,12 +65,15 @@ const ImageSlider = ({ images, width }: Props) => {
             </Slide>
             <div style={{
                 position: 'absolute' as 'absolute',
-                inset: 0,
+                top: '50%',
                 width: '100%',
                 display: 'grid',
                 gridTemplateColumns: 'repeat(2, 1fr)',
             }}>
                 <FaChevronLeft
+                    fill='#eee'
+                    fillOpacity={0.9}
+                    strokeWidth={1}
                     filter='invert(1)'
                     data-testid='previousBtn'
                     style={{
@@ -80,13 +83,16 @@ const ImageSlider = ({ images, width }: Props) => {
                     }}
                     onClick={handlePreviousImage} />
                 <FaChevronRight
+                    fill='#eee'
+                    fillOpacity={0.9}
+                    strokeWidth={1}
                     filter='invert(1)'
                     data-testid='nextBtn'
                     style={{
                         fontSize: '2rem',
                         justifySelf: 'end',
                         alignSelf: 'center',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
                     }}
                     onClick={handleNextImage} />
             </div>
