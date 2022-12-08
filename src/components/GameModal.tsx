@@ -76,7 +76,12 @@ interface Props {
 const GameModal = ({ id, open, handleClose, images }: Props) => {
     const theme = useTheme();
 
-    const { data, isFetching } = useGameDetails(id);
+    const { 
+        data, 
+        isFetching,
+        error,
+        isError,
+    } = useGameDetails(id);
 
     return (
         <Modal
@@ -86,8 +91,10 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
             aria-describedby="modal-description"
         >
             <Box sx={style}>
-                {(isFetching || !data) ? 
+                {isFetching ? 
                 (<Typography sx={{ alignSelf: 'center' }}>Loading...</Typography>) : 
+                (!data) || (isError && error && (error instanceof Error)) ? 
+                (<Typography sx={{ alignSelf: 'center' }}>Something went wrong!</Typography>) : 
                 (
                     <>
                     <div style={{
