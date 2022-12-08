@@ -40,7 +40,8 @@ const LoadedImage = (props: Props) => {
                     width: '100%', 
                     height: height,
                     objectPosition: 'top',
-                    objectFit: 'cover'
+                    objectFit: 'cover',
+                    aspectRatio: '1 / 1'
                 }} />
             ) : (
                 <Skeleton variant='rectangular' 
