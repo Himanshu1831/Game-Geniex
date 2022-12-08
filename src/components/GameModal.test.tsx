@@ -10,11 +10,63 @@ const mockedUseGameDetails = useGameDetails as jest.Mock<any>
 
 jest.mock('../utils/hooks/useGameDetails')
 
-const setUp = () => {
+const setUpSuccessful = () => {
+    mockedUseGameDetails.mockImplementation(
+        () => ({
+            data: MOCK_GAME,
+            isFetching: false,
+        })
+    )
+
     const handleClose = jest.fn();
 
     const utils = render(<GameModal 
         id={MOCK_GAME.id} 
+        open={true}
+        handleClose={handleClose} 
+        images={[]}/>
+    )
+
+    return { 
+        ...utils,
+        handleClose
+    }
+}
+
+const setUpLoading = () => {
+    mockedUseGameDetails.mockImplementation(
+        () => ({
+            isFetching: true,
+        })
+    )
+
+    const handleClose = jest.fn();
+
+    const utils = render(<GameModal 
+        id={1} 
+        open={true}
+        handleClose={handleClose} 
+        images={[]}/>
+    )
+
+    return { 
+        ...utils,
+        handleClose
+    }
+}
+
+const setUpError = () => {
+    mockedUseGameDetails.mockImplementation(
+        () => ({
+            data: null,
+            isFetching: true,
+        })
+    )
+
+    const handleClose = jest.fn();
+
+    const utils = render(<GameModal 
+        id={1} 
         open={true}
         handleClose={handleClose} 
         images={[]}/>
