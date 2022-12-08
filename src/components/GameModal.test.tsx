@@ -15,6 +15,8 @@ const setUpSuccessful = () => {
         () => ({
             data: MOCK_GAME,
             isFetching: false,
+            isError: false,
+            error: null,
         })
     )
 
@@ -58,8 +60,8 @@ const setUpFetching = () => {
 const setUpError = () => {
     mockedUseGameDetails.mockImplementation(
         () => ({
-            data: null,
-            isFetching: true,
+            isError: true,
+            error: new Error('Something went wrong!')
         })
     )
 
@@ -106,6 +108,11 @@ test('should not display skeletons when no data is returned', () => {
 test('should display loading indicator when data is being fetched', () => {
     setUpFetching();
     expect(screen.getByText(/loading\.\.\./i)).toBeVisible();
+})
+
+test('should display message when error occurs', () => {
+    setUpError();
+    expect(screen.getByText(/something went wrong!/i)).toBeVisible();
 })
 
 test('handler is called when closeBtn is clicked', async () => {
