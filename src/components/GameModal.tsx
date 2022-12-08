@@ -31,22 +31,6 @@ const style = {
     p: 4,
     gap: 2,
     fontSize: { xs: 14, lg: 18 }
-};
-
-const SkeletonModal = () => {
-    return (
-        <>
-            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={100} animation='wave' />
-            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={400} animation='wave' />
-            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={200} animation='wave' />
-            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={50} animation='wave' />
-            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={100} animation='wave' />
-            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={150} animation='wave' />
-            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={150} animation='wave' />
-            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={150} animation='wave' />
-            <Skeleton aria-label='skeleton' variant='rectangular' width='100%' height={150} animation='wave' />
-        </>
-    )
 }
 
 const ChipsGroup = ({ name, data }: { name: string, data: any }) => {
@@ -103,7 +87,7 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
         >
             <Box sx={style}>
                 {(isFetching || !data) ? 
-                (<SkeletonModal />) : 
+                (<Typography sx={{ alignSelf: 'center' }}>Loading...</Typography>) : 
                 (
                     <>
                     <div style={{
@@ -142,22 +126,10 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
                     </div>
 
                    {images.length > 0 ? 
-                   (<ImageSlider images={images} width='100%' />) 
-                   : (<Skeleton variant='rectangular' animation='wave' width='100%' height={500} />)}
-                   
-                   <Typography 
-                    variant='caption' 
-                    sx={{
-                        fontSize: { xs: 12, lg: 16 },
-                    }}>
-                        Source: &nbsp;
-                        <Link 
-                        underline='hover'
-                        component='a' 
-                        href='https://api.rawg.io/docs/'>
-                            RAWG Game Database
-                        </Link>
-                    </Typography>
+                   (<Box sx={{ alignSelf: 'center'}}> 
+                        <ImageSlider images={images} width={600} />
+                   </Box>) 
+                   : (<Skeleton variant='rectangular' animation='wave' height={600} />)}
 
                     <div
                         id='modal-description'
@@ -217,6 +189,22 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
                                  }}/>
                         ))}
                     </div>
+
+                    <Typography 
+                        variant='caption' 
+                        sx={{
+                            width: '100%',
+                            textAlign: 'right',
+                            fontSize: { xs: 12, lg: 16 },
+                        }}>
+                            Source: &nbsp;
+                            <Link 
+                            underline='hover'
+                            component='a' 
+                            href='https://api.rawg.io/docs/'>
+                                RAWG Game Database
+                            </Link>
+                        </Typography>
                     </>
                 )}
             </Box>
