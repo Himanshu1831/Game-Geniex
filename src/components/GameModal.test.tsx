@@ -48,7 +48,7 @@ test('should display all game elements', () => {
     expect(screen.getByText(MOCK_GAME.description)).toBeVisible();
 })
 
-test('should display skeletons while data is being fetched', () => {
+test('should not display skeletons while data is being fetched', () => {
     mockedUseGameDetails.mockImplementation(
         () => ({
             data: MOCK_GAME,
@@ -58,7 +58,7 @@ test('should display skeletons while data is being fetched', () => {
 
     setUp();
     
-    expect(screen.getAllByLabelText('skeleton')).toHaveLength(9);
+    expect(screen.queryAllByLabelText('skeleton')).toHaveLength(0);
 })
 
 test('should display skeletons when no data is returned', () => {
