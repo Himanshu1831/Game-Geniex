@@ -80,6 +80,28 @@ const setUpError = () => {
     }
 }
 
+const setUpNoData = () => {
+    mockedUseGameDetails.mockImplementation(
+        () => ({
+            data: undefined,
+        }
+    ))
+
+    const handleClose = jest.fn();
+
+    const utils = render(<GameModal 
+        id={1} 
+        open={true}
+        handleClose={handleClose} 
+        images={[]}/>
+    )
+
+    return { 
+        ...utils,
+        handleClose
+    }
+}
+
 test('should display all game elements', () => {
     setUpSuccessful();
 
@@ -113,6 +135,11 @@ test('should display loading indicator when data is being fetched', () => {
 test('should display message when error occurs', () => {
     setUpError();
     expect(screen.getByText(/something went wrong!/i)).toBeVisible();
+})
+
+test('should display message when no data is found', () => {
+    setUpNoData();
+    expect(screen.getByText(/no game data is found!/i)).toBeVisible();
 })
 
 test('handler is called when closeBtn is clicked', async () => {
