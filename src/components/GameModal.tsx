@@ -73,6 +73,12 @@ interface Props {
     images: Array<{ id: number, image: string }>;
 }
 
+const Loading = (<Typography sx={{ alignSelf: 'center', wordWrap: 'break-word' }}>Loading...</Typography>);
+
+const Error = (<Typography sx={{ alignSelf: 'center', wordWrap: 'break-word' }}>Something went wrong!</Typography>);
+
+const NoData = (<Typography sx={{ alignSelf: 'center', wordWrap: 'break-word' }}>No game data is found!</Typography>);
+
 const GameModal = ({ id, open, handleClose, images }: Props) => {
     const theme = useTheme();
 
@@ -91,10 +97,9 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
             aria-describedby="modal-description"
         >
             <Box sx={style}>
-                {isFetching ? 
-                (<Typography sx={{ alignSelf: 'center' }}>Loading...</Typography>) : 
-                (!data) || (isError && error && (error instanceof Error)) ? 
-                (<Typography sx={{ alignSelf: 'center' }}>Something went wrong!</Typography>) : 
+                {isFetching ? Loading : 
+                (isError && error) ? Error :
+                (!data) ? NoData :  
                 (
                     <>
                     <div style={{
