@@ -33,7 +33,7 @@ const setUpSuccessful = () => {
     }
 }
 
-const setUpLoading = () => {
+const setUpFetching = () => {
     mockedUseGameDetails.mockImplementation(
         () => ({
             isFetching: true,
@@ -79,14 +79,7 @@ const setUpError = () => {
 }
 
 test('should display all game elements', () => {
-    mockedUseGameDetails.mockImplementation(
-        () => ({
-            data: MOCK_GAME,
-            isFetching: false,
-        })
-    )
-
-    setUp();
+    setUpSuccessful();
 
     expect(screen.getByText(MOCK_GAME.name)).toBeInTheDocument();
     expect(screen.getByText(MOCK_GAME.rating.toString())).toBeInTheDocument();
@@ -101,51 +94,22 @@ test('should display all game elements', () => {
 })
 
 test('should not display skeletons while data is being fetched', () => {
-    mockedUseGameDetails.mockImplementation(
-        () => ({
-            data: MOCK_GAME,
-            isFetching: true,
-        })
-    )
-
-    setUp();
-    
+    setUpFetching();
     expect(screen.queryAllByLabelText('skeleton')).toHaveLength(0);
 })
 
 test('should not display skeletons when no data is returned', () => {
-    mockedUseGameDetails.mockImplementation(
-        () => ({
-            data: null,
-            isFetching: false,
-        })
-    )
-
-    setUp();
-    
+    setUpError();
     expect(screen.queryAllByLabelText('skeleton')).toHaveLength(0);
 })
 
 test('should display loading indicator when data is being fetched', () => {
-    mockedUseGameDetails.mockImplementation(
-        () => ({
-            data: MOCK_GAME,
-            isFetching: true,
-        })
-    )
-
-    setUp();
+    setUpFetching();
     expect(screen.getByText(/loading\.\.\./i)).toBeVisible();
 })
 
 test('handler is called when closeBtn is clicked', async () => {
-    mockedUseGameDetails
-    .mockImplementation(() => ({
-        data: MOCK_GAME,
-        isFetching: false,
-    }))
-
-    const { handleClose } = setUp();
+    const { handleClose } = setUpSuccessful();
     const closeBtn = screen.getByTestId('closeBtn');
 
     await userEvent.click(closeBtn);
