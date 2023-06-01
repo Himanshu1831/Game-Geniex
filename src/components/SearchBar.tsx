@@ -3,6 +3,7 @@ import React, { useState, useCallback, ReactNode } from 'react';
 import { styled, alpha } from '@mui/material/styles'
 import InputBase from '@mui/material/InputBase';
 import { GrSearch } from 'react-icons/gr'
+import { Typography } from '@mui/material';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -47,23 +48,31 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 interface Props {
-    search: string; 
+    search: string;
     handleChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 }
 
 const SearchBar = ({ search, handleChange }: Props) => {
     return (
-        <Search>
-            <SearchIconWrapper>
-                <GrSearch />
-            </SearchIconWrapper>
-            <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
-                value={search}
-                onChange={handleChange}
-            />
-        </Search>
+        <>
+            <Search>
+                <SearchIconWrapper>
+                    <GrSearch />
+                </SearchIconWrapper>
+                <StyledInputBase
+                    placeholder="Search…"
+                    inputProps={{ 'aria-label': 'search' }}
+                    value={search}
+                    onChange={handleChange}
+                />
+            </Search>
+            <div>
+
+                <Typography marginLeft='30px'>
+                    GameGeniex
+                </Typography>
+            </div>
+        </>
     )
 }
 

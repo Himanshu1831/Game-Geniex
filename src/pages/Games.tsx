@@ -112,7 +112,7 @@ const Games = () => {
                             onClear={handleClear} />
 
                         <Box sx={{ display: 'flex', width: '100%', flexWrap: 'wrap', padding: 1 }}>
-                            <Typography variant='h6' sx={{ flex: '1 1 0%' }}>RAWG Game Database</Typography>
+                            <Typography variant='h6' sx={{ flex: '1 1 0%' }}>GameGeniex</Typography>
                             <IconButton
                                 sx={{ display: { xs: 'block', md: 'none' }, marginLeft: 1 }}
                                 onClick={handleDrawerToggle}>

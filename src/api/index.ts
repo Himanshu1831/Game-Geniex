@@ -1,7 +1,7 @@
 import { Filters } from "../utils/hooks/useGames";
 import { TypeGuard } from "../utils/typeguards"
 
-const API_KEY = '216afc1f9f044e1daafe76a78da14b71'
+const API_KEY = 'a1091ee65114422589fe07d1b8c5a66a'
 
 export interface Query {
     endpoint: string;
