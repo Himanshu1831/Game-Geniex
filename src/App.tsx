@@ -17,7 +17,8 @@ function App() {
             justifyContent: 'center',
         }}>
             <Games />
-            <Box 
+            
+            {/* <Box 
             sx={{ 
                 width: '100%', 
                 padding: 1, 
@@ -25,6 +26,7 @@ function App() {
                 display: 'flex',
                 flexWrap: 'wrap',
             }}>
+
                 <Typography
                     variant='body1'
                     sx={{
@@ -44,18 +46,7 @@ function App() {
                         RAWG Game Database
                     </Link>
                 </Typography>
-                <Link
-                    underline='hover'
-                    component='a'
-                    href='https://github.com/serey-roth/gamestore'
-                    sx={{
-                        color: 'white',
-                        fontSize: { xs: 12, lg: 16 },
-                        fontFamily: theme.typography.fontFamily,
-                    }}>
-                    Serey Roth &copy; 2022
-                </Link>
-            </Box>
+            </Box> */}
         </Box>
     )
 }

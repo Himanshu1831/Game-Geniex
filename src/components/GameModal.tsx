@@ -202,7 +202,7 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
                         ))}
                     </div>
 
-                    <Typography 
+                    {/* <Typography 
                         variant='caption' 
                         sx={{
                             width: '100%',
@@ -216,7 +216,7 @@ const GameModal = ({ id, open, handleClose, images }: Props) => {
                             href='https://api.rawg.io/docs/'>
                                 RAWG Game Database
                             </Link>
-                        </Typography>
+                        </Typography> */}
                     </>
                 )}
             </Box>

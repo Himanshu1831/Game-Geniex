@@ -20,6 +20,8 @@ import SearchAppBar from '../components/SearchAppBar'
 import useGames, { Filter } from '../utils/hooks/useGames'
 import { ItemsPerPage } from '../components/pagination'
 
+
+
 const Games = () => {
     const [isPending, startTransition] = useTransition();
     const [filterDrawer, setFilterDrawer] = useState(false);
@@ -100,19 +102,27 @@ const Games = () => {
                     </Typography>
                 ) : (
                     <>
+                        
+                        {/* invoke the searchAppBar from components */}
+
+
                         <SearchAppBar
                             search={search}
-                            handleChange={handleSearchChange} />
+                            handleChange={handleSearchChange} />  
+
+
+
+                        {/* //Invoke the FilterDrawer from Components */}   
 
                         <FilterDrawer
                             filters={filters}
                             open={filterDrawer}
                             handleDrawerToggle={handleDrawerToggle}
                             onManageFilters={handleFilters}
-                            onClear={handleClear} />
+                            onClear={handleClear} />             
+                            
 
                         <Box sx={{ display: 'flex', width: '100%', flexWrap: 'wrap', padding: 1 }}>
-                            <Typography variant='h6' sx={{ flex: '1 1 0%' }}>GameGeniex</Typography>
                             <IconButton
                                 sx={{ display: { xs: 'block', md: 'none' }, marginLeft: 1 }}
                                 onClick={handleDrawerToggle}>
@@ -132,14 +142,25 @@ const Games = () => {
                                 </Grid>
                             ))}
                         </Grid>
+                        
 
-                        <Typography variant='body2' alignSelf='center' marginBottom={1.5}>
+                        {/* Count of total records found in the database */}
+
+
+                        <Typography variant='h6' alignSelf='center' marginBottom={1.5}>
                             {isFetching ? 'Fetching games...' : `${data?.count || 0} games found`}
                         </Typography>
+
+
+                        {/* display games details in cardd */}
 
                         <GameCards
                             results={data?.results}
                             isFetching={isFetching} />
+                            
+
+                        {/* Pgination for move t another page */}
+
 
                         <Pagination
                             count={data?.count ? Math.ceil(data?.count / ItemsPerPage) : -1}

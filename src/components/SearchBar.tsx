@@ -68,7 +68,9 @@ const SearchBar = ({ search, handleChange }: Props) => {
             </Search>
             <div>
 
-                <Typography marginLeft='30px'>
+                <Typography
+                 fontSize = '22px'
+                 marginLeft='30px'>
                     GameGeniex
                 </Typography>
             </div>
