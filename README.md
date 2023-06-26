@@ -8,7 +8,7 @@ This project is also a gateway project to React testing. Since finishing this pr
 
 All data and images are retrieved from RAWG Game API and belong solely to RAWG. 
 
-## Update (12/06/2022): 
+## Update (12/04/2023): 
 * Swapped out Redux toolkit query for React Query to handle HTTP requests
 * Wrote custom hooks for fetching games and game details
 * Tested components using Jest and React Testing Library
