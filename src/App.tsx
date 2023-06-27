@@ -17,37 +17,7 @@ function App() {
             justifyContent: 'center',
         }}>
             <Games />
-            <Games />
-            
-            {/* <Box 
-            sx={{ 
-                width: '100%', 
-                padding: 1, 
-                bgcolor: theme.palette.primary.main,
-                display: 'flex',
-                flexWrap: 'wrap',
-            }}>
-
-                <Typography
-                    variant='body1'
-                    sx={{
-                        flex: 1,
-                        color: 'white',
-                        fontSize: { xs: 12, lg: 16 },
-                    }}>
-                    Data Source: &nbsp;
-                    <Link
-                        underline='hover'
-                        component='a'
-                        href='https://api.rawg.io/docs/'
-                        sx={{
-                            color: 'white',
-                            fontSize: { xs: 12, lg: 16 },
-                        }}>
-                        RAWG Game Database
-                    </Link>
-                </Typography>
-            </Box> */}
+        
         </Box>
     )
 }
