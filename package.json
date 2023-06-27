@@ -1,18 +1,22 @@
 {
   "name": "client",
+  "homepage": "https://gamegeniex.com",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "build": "tsc && vite build",
-    "preview": "vite preview",
+    "preview": "vite preview --port 5000",
     "test": "jest --verbose"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@mui/material": "^5.10.14",
+    "gh-pages": "^5.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.6.0",
