@@ -17,6 +17,7 @@ function App() {
             justifyContent: 'center',
         }}>
             <Games />
+            <Games />
             
             {/* <Box 
             sx={{ 
